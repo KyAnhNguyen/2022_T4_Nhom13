@@ -1,0 +1,305 @@
+* staging
+
+-- tạo database staging
+create database staging;
+
+-- tạo bảng tỉnh, thành
+CREATE TABLE province (
+    id_province varchar(20) NOT NULL PRIMARY KEY,
+    name_province varchar(100) NOT NULL,
+    created_date int(11) not null,
+    updated_date date not null
+   );
+
+-- tạo bảng giải thưởng
+ CREATE TABLE prize (
+    id_prize varchar(10) NOT NULL PRIMARY KEY,
+    name_prize varchar(100) NOT NULL,
+    value_prize int NOT NULL,
+    created_date int(11) not null,
+    updated_date date not null
+   );  
+
+-- tạo bảng date_dim
+
+CREATE TABLE date_dim (
+	date_sk int(11) NOT NULL PRIMARY KEY,
+	full_date varchar(100) NULL,
+	day_since_2005 varchar(100) NULL,
+	month_since_2005 varchar(100) NULL,
+	day_of_week varchar(100) NULL,
+	calendar_month varchar(100) NULL,
+	calendar_year varchar(100) NULL,
+	calendar_year_month varchar(100) NULL,
+	day_of_month varchar(100) NULL,
+	day_of_year varchar(100) NULL,
+	week_of_year_sunday varchar(100) NULL,
+	year_week_sunday varchar(100) NULL,
+	week_sunday_start varchar(100) NULL,
+	week_of_year_monday varchar(100) NULL,
+	year_week_monday varchar(100) NULL,
+	week_monday_start varchar(100) NULL,
+	holiday varchar(100) NULL,
+	date_type varchar(100) NULL
+)
+
+-- tạo bảng chính bên staging
+CREATE table lotto (
+    natural_key int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_province varchar(20) NOT NULL,
+    id_prize varchar(10) NOT NULL,
+    number int NULL,
+    status varchar(10) NULL,
+    created_date int(11) not null,
+    updated_date date not null
+    );
+   ALTER TABLE lotto ADD FOREIGN KEY(id_province) REFERENCES province(id_province);
+   ALTER TABLE lotto ADD FOREIGN KEY(id_prize) REFERENCES prize(id_prize);
+   ALTER TABLE lotto ADD FOREIGN KEY(created_date) REFERENCES date_dim(date_sk);
+
+
+* data warehouse
+
+-- tạo database data warehouse
+create database data_warehouse;
+
+-- tạo bảng tỉnh, thành
+CREATE TABLE province (
+    id_province varchar(20) NOT NULL PRIMARY KEY,
+    name_province varchar(100) NOT NULL,
+    created_date int(11) not null,
+    updated_date date not null
+   );
+
+-- tạo bảng giải thưởng
+ CREATE TABLE prize (
+    id_prize varchar(10) NOT NULL PRIMARY KEY,
+    name_prize varchar(100) NOT NULL,
+    value_prize int NOT NULL,
+    created_date int(11) not null,
+    updated_date date not null
+   );  
+
+-- tạo bảng date_dim
+
+CREATE TABLE date_dim (
+	date_sk int(11) NOT NULL PRIMARY KEY,
+	full_date varchar(100) NULL,
+	day_since_2005 varchar(100) NULL,
+	month_since_2005 varchar(100) NULL,
+	day_of_week varchar(100) NULL,
+	calendar_month varchar(100) NULL,
+	calendar_year varchar(100) NULL,
+	calendar_year_month varchar(100) NULL,
+	day_of_month varchar(100) NULL,
+	day_of_year varchar(100) NULL,
+	week_of_year_sunday varchar(100) NULL,
+	year_week_sunday varchar(100) NULL,
+	week_sunday_start varchar(100) NULL,
+	week_of_year_monday varchar(100) NULL,
+	year_week_monday varchar(100) NULL,
+	week_monday_start varchar(100) NULL,
+	holiday varchar(100) NULL,
+	date_type varchar(100) NULL
+)
+
+-- tạo bảng chính bên staging
+CREATE table lotto (
+    natural_key int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_province varchar(20) NOT NULL,
+    id_prize varchar(10) NOT NULL,
+    number int NULL,
+    status varchar(10) NULL,
+    created_date int(11) not null,
+    updated_date date not null
+    );
+   ALTER TABLE lotto ADD FOREIGN KEY(id_province) REFERENCES province(id_province);
+   ALTER TABLE lotto ADD FOREIGN KEY(id_prize) REFERENCES prize(id_prize);
+   ALTER TABLE lotto ADD FOREIGN KEY(created_date) REFERENCES date_dim(date_sk);
+
+* controller
+-- tạo database controller
+
+create database controller;
+
+-- tạo bảng date_dim
+
+CREATE TABLE date_dim (
+	date_sk int(11) NOT NULL PRIMARY KEY,
+	full_date varchar(100) NULL,
+	day_since_2005 varchar(100) NULL,
+	month_since_2005 varchar(100) NULL,
+	day_of_week varchar(100) NULL,
+	calendar_month varchar(100) NULL,
+	calendar_year varchar(100) NULL,
+	calendar_year_month varchar(100) NULL,
+	day_of_month varchar(100) NULL,
+	day_of_year varchar(100) NULL,
+	week_of_year_sunday varchar(100) NULL,
+	year_week_sunday varchar(100) NULL,
+	week_sunday_start varchar(100) NULL,
+	week_of_year_monday varchar(100) NULL,
+	year_week_monday varchar(100) NULL,
+	week_monday_start varchar(100) NULL,
+	holiday varchar(100) NULL,
+	date_type varchar(100) NULL
+)
+-- tạo bảng config
+CREATE TABLE config (
+	id_config int(11) NOT NULL PRIMARY KEY,
+      server_name varchar(100) NOT NULL,
+      url text not null,
+	created_date int(11) not null,
+      updated_date date not null
+)
+-- tạo bảng contactor
+CREATE TABLE contactor (
+	id_contactor int(11) NOT NULL PRIMARY KEY,
+      name varchar(100) NOT NULL,
+      email varchar(255) not null,
+	created_date int(11) not null,
+      updated_date date not null
+)
+-- tạo bảng log
+CREATE TABLE log (
+      id_log int(11) NOT NULL PRIMARY KEY,
+	id_config int(11) NOT NULL,
+      status varchar(10) NOT NULL,
+      id_contactor int(11) NOT NULL,
+	created_date int(11) not null,
+      updated_date date not null	
+)
+ALTER TABLE log ADD FOREIGN KEY(id_config) REFERENCES config(id_config);
+ALTER TABLE log ADD FOREIGN KEY(id_contactor) REFERENCES contactor(id_contactor);
+
+
+* query insert province
+-- thêm dữ liệu vào bảng tỉnh, thành
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSAG', 'An Giang', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSBL', 'Bạc Liêu', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSBTR', 'Bến Tre', 2022-09-22, 2022-09-22); 
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSBD', 'Bình Dương', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSBP', 'Bình Phước', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSBTH', 'Bình Thuận', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSCM', 'Cà Mau', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSCT', 'Cần Thơ', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSDL', 'Đà Lạt', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSDN', 'Đồng Nai', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSDT', 'Đồng Tháp', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSHG', 'Hậu Giang', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSKG', 'Kiên Giang', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSLA', 'Long An', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSST', 'Sóc Trăng', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSTN', 'Tây Ninh', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSTG', 'Tiền Giang', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSHCM', 'TP.HCM', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSTV', 'Trà Vinh', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSVL', 'Vĩnh Long', 2022-09-22, 2022-09-22);
+
+INSERT INTO province(id_province, name_province, created_date, updated_date)
+VALUES('XSVT', 'Vũng Tàu', 2022-09-22, 2022-09-22);
+
+* query insert prize:
+-- thêm dữ liệu vào bảng giải thưởng
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai1','Giải nhất','30000000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai2','Giải nhì','15000000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai3','Giải ba','10000000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai4','Giải tư','3000000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai5','Giải năm','1000000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai6','Giải sáu','400000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai7','Giải bảy','200000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giai8','Giải tám','100000',2022-09-22,2022-09-22);
+
+INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `updated_date`)
+	      VALUES ('giaidb','Giải đặc biệt','2000000000',2022-09-22,2022-09-22);
+
+* từ csv -> staging
+
+-- query chuyển file.csv vào bảng xổ số của database staging
+LOAD DATA INFILE '/learnGo/src/scrapper/09-22-2022-KA.csv'
+INTO TABLE lotto
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(natural_key, id_province, id_prize, number, status, @created_date, @updated_date)
+SET created_date = STR_TO_DATE(@created_date, '%d/%m/%Y'),
+updated_date = STR_TO_DATE(@updated_date, '%d/%m/%Y');
+
+-- Với bạn có 2 database bhxhbg_db và bhxhbg_new insert nó vô tb_product thì làm như sau:
+INSERT INTO bhxhbg_db.dbo.tb_product(id, name,...)
+SELECT id, name,... FROM bhxhbg_new.dbo.tb_product
+
+-- query date_dim
+LOAD DATA INFILE '/learnGo/src/scrapper/date_dim.csv'
+INTO TABLE date_dim
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+
+-- test
+-- 2022/09/22 = 6474
+SELECT date_sk from date_dim WHERE full_date in (select created_date from lotto)
+
+
+
+control (file config, log)
+log là lấy extract
+cấu trúc của table trên toàn bộ hệ thống
+3. workflow (dim, fact)
