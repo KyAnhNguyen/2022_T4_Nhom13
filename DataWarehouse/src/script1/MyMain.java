@@ -12,6 +12,9 @@ public class MyMain {
 		System.out.println("Hêllo");
 		System.out.println("hello");
 
+
+		System.out.println("CN test");
+
 	}
 
 }
