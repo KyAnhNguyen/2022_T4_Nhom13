@@ -11,6 +11,10 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
 public class Handle_files {
+	
+	private static String file_path_upload = "E:\\learnGo\\src\\scrapper\\";
+	private static String file_path_download = "E:\\learnGo\\src\\scrapper\\";
+
 
 	public static FTPClient ftpClient;
 
@@ -21,7 +25,7 @@ public class Handle_files {
 		ftpClient = new FTPClient();
 		try {
 			ftpClient.connect(Config.SERVER);
-			ftpClient.login(Config.USERNAME, Config.PASSWORD);
+			ftpClient.login(Config.USERNAME_KA, Config.PASSWORD);
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 		} catch (Exception e) {
@@ -51,7 +55,7 @@ public class Handle_files {
 		try {
 			connection();
 
-			File firstLocalFile = new File("C:\\Users\\admin\\Desktop\\FTP-Upload\\" + filename + ".csv");
+			File firstLocalFile = new File(file_path_upload + filename + ".csv");
 
 			String firstRemoteFile = "/data_extract/" + filename + ".csv";
 
@@ -79,7 +83,7 @@ public class Handle_files {
 
 			String remoteFile1 = "/data_extract/" + filename + ".csv";
 
-			File downloadFile1 = new File("C:\\Users\\admin\\Desktop\\FTP-Down\\" + filename + ".csv");
+			File downloadFile1 = new File(file_path_download + filename + ".csv");
 
 			OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
 
@@ -96,13 +100,13 @@ public class Handle_files {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(upload_file("lotto_30_09_2022(19130154)"));
-		System.out.println(upload_file("lotto_29_09_2022(19130154)"));
-		System.out.println(upload_file("lotto_28_09_2022(19130154)"));
+//		System.out.println(upload_file("10-15-2022-KA"));
+//		System.out.println(upload_file("lotto_29_09_2022(19130154)"));
+//		System.out.println(upload_file("lotto_28_09_2022(19130154)"));
 
 		System.out.println(download_file("lotto_30_09_2022(19130154)"));
-		System.out.println(download_file("lotto_29_09_2022(19130154)"));
-		System.out.println(download_file("lotto_28_09_2022(19130154)"));
+//		System.out.println(download_file("lotto_29_09_2022(19130154)"));
+//		System.out.println(download_file("lotto_28_09_2022(19130154)"));
 
 	}
 }
