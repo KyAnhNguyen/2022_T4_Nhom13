@@ -17,7 +17,5 @@ public class MyMain {
 		System.out.println("CN test");
 		
 		System.out.println("CN test");
-
 	}
-
 }
