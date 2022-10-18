@@ -7,7 +7,7 @@ create database staging;
 CREATE TABLE province (
     id_province varchar(20) NOT NULL PRIMARY KEY,
     name_province varchar(100) NOT NULL,
-    created_date int(11) not null,
+    created_date date not null,
     updated_date date not null
    );
 
@@ -16,7 +16,7 @@ CREATE TABLE province (
     id_prize varchar(10) NOT NULL PRIMARY KEY,
     name_prize varchar(100) NOT NULL,
     value_prize int NOT NULL,
-    created_date int(11) not null,
+    created_date date not null,
     updated_date date not null
    );  
 
@@ -45,7 +45,7 @@ CREATE TABLE date_dim (
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
-    natural_key int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    natural_key int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_province varchar(20) NOT NULL,
     id_prize varchar(10) NOT NULL,
     number int NULL,
@@ -67,7 +67,7 @@ create database data_warehouse;
 CREATE TABLE province (
     id_province varchar(20) NOT NULL PRIMARY KEY,
     name_province varchar(100) NOT NULL,
-    created_date int(11) not null,
+    created_date date not null,
     updated_date date not null
    );
 
@@ -76,7 +76,7 @@ CREATE TABLE province (
     id_prize varchar(10) NOT NULL PRIMARY KEY,
     name_prize varchar(100) NOT NULL,
     value_prize int NOT NULL,
-    created_date int(11) not null,
+    created_date date not null,
     updated_date date not null
    );  
 
@@ -105,7 +105,7 @@ CREATE TABLE date_dim (
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
-    natural_key int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    natural_key int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_province varchar(20) NOT NULL,
     id_prize varchar(10) NOT NULL,
     number int NULL,
@@ -122,34 +122,12 @@ CREATE table lotto (
 
 create database controller;
 
--- tạo bảng date_dim
-
-CREATE TABLE date_dim (
-	date_sk int(11) NOT NULL PRIMARY KEY,
-	full_date varchar(100) NULL,
-	day_since_2005 varchar(100) NULL,
-	month_since_2005 varchar(100) NULL,
-	day_of_week varchar(100) NULL,
-	calendar_month varchar(100) NULL,
-	calendar_year varchar(100) NULL,
-	calendar_year_month varchar(100) NULL,
-	day_of_month varchar(100) NULL,
-	day_of_year varchar(100) NULL,
-	week_of_year_sunday varchar(100) NULL,
-	year_week_sunday varchar(100) NULL,
-	week_sunday_start varchar(100) NULL,
-	week_of_year_monday varchar(100) NULL,
-	year_week_monday varchar(100) NULL,
-	week_monday_start varchar(100) NULL,
-	holiday varchar(100) NULL,
-	date_type varchar(100) NULL
-)
 -- tạo bảng config
 CREATE TABLE config (
 	id_config int(11) NOT NULL PRIMARY KEY,
       server_name varchar(100) NOT NULL,
       url text not null,
-	created_date int(11) not null,
+	created_date date not null,
       updated_date date not null
 )
 -- tạo bảng contactor
@@ -157,7 +135,7 @@ CREATE TABLE contactor (
 	id_contactor int(11) NOT NULL PRIMARY KEY,
       name varchar(100) NOT NULL,
       email varchar(255) not null,
-	created_date int(11) not null,
+	created_date date not null,
       updated_date date not null
 )
 -- tạo bảng log
@@ -166,7 +144,7 @@ CREATE TABLE log (
 	id_config int(11) NOT NULL,
       status varchar(10) NOT NULL,
       id_contactor int(11) NOT NULL,
-	created_date int(11) not null,
+	created_date date not null,
       updated_date date not null	
 )
 ALTER TABLE log ADD FOREIGN KEY(id_config) REFERENCES config(id_config);
