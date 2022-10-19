@@ -41,7 +41,7 @@ CREATE TABLE date_dim (
 	week_monday_start varchar(100) NULL,
 	holiday varchar(100) NULL,
 	date_type varchar(100) NULL
-)
+);
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
@@ -101,7 +101,7 @@ CREATE TABLE date_dim (
 	week_monday_start varchar(100) NULL,
 	holiday varchar(100) NULL,
 	date_type varchar(100) NULL
-)
+);
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
@@ -131,7 +131,7 @@ CREATE TABLE config (
 	password varchar(100) NOT NULL,
 	created_date date not null,
       updated_date date not null
-)
+);
 -- tạo bảng contactor
 CREATE TABLE contactor (
 	id_contactor int(11) NOT NULL PRIMARY KEY,
@@ -141,7 +141,7 @@ CREATE TABLE contactor (
 	password varchar(100) NOT NULL,
 	created_date date not null,
       updated_date date not null
-)
+);
 -- tạo bảng log
 CREATE TABLE log (
       id_log int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -150,7 +150,7 @@ CREATE TABLE log (
       id_contactor int(11) NOT NULL,
 	created_date date not null,
       updated_date date not null	
-)
+);
 ALTER TABLE log ADD FOREIGN KEY(id_config) REFERENCES config(id_config);
 ALTER TABLE log ADD FOREIGN KEY(id_contactor) REFERENCES contactor(id_contactor);
 
@@ -269,17 +269,23 @@ INSERT INTO bhxhbg_db.dbo.tb_product(id, name,...)
 SELECT id, name,... FROM bhxhbg_new.dbo.tb_product
 
 -- query date_dim
-LOAD DATA INFILE '/learnGo/src/scrapper/date_dim.csv'
-INTO TABLE date_dim
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
+LOAD DATA LOCAL INFILE url
+	INTO TABLE tableName
+	FIELDS TERMINATED BY ','
+	ENCLOSED BY '"'
+	LINES TERMINATED BY '\n'
 
 -- test
 -- 2022/09/22 = 6474
 SELECT date_sk from date_dim WHERE full_date in (select created_date from lotto)
 
-
+-- 
+DELIMITER //
+CREATE PROCEDURE getDate_Dim()
+BEGIN
+	SELECT * FROM date_dim;
+END//
+DELIMITER ;
 
 control (file config, log)
 log là lấy extract
