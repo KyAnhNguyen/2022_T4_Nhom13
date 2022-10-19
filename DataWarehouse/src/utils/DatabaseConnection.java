@@ -11,16 +11,16 @@ public class DatabaseConnection {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection con = DriverManager.getConnection(  
 				"jdbc:mysql://localhost:3306/staging","root",""); 
 		
 	}
 	
-	public boolean connect(String database_name) throws SQLException {
-		Connection con = DriverManager.getConnection(  
-				"jdbc:mysql://localhost:3306/staging","root","");
-		return true;
+	public Connection connect(String database_name) throws SQLException {
+		conn = DriverManager.getConnection(  
+				"jdbc:mysql://localhost:3306/" + database_name,"root","");
+		return conn;
 	}
 	
 	public boolean setDatabase(String database_name) {
@@ -30,5 +30,8 @@ public class DatabaseConnection {
 	public void disConnect() throws SQLException {
 		conn.close();
 	}
+	
+	
+	
 
 }

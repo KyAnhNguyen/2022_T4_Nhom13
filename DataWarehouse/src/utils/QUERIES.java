@@ -4,12 +4,8 @@ public class QUERIES {
 
 	// csv to staging
 	public static class QueryTransformCSV {
-		public static final String LOAD_DATA = ""
-				+ "LOAD DATA LOCAL INFILE ?\r\n"
-				+ "	INTO TABLE ?\r\n"
-				+ "	FIELDS TERMINATED BY ','\r\n"
-				+ "	ENCLOSED BY '\"'\r\n"
-				+ "	LINES TERMINATED BY '\\n'";
+		public static final String LOAD_DATA = 
+				"LOAD DATA INFILE ? INTO TABLE ? FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n";
 				
 	}
 
