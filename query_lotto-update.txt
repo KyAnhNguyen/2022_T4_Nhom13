@@ -124,9 +124,11 @@ create database controller;
 
 -- tạo bảng config
 CREATE TABLE config (
-	id_config int(11) NOT NULL PRIMARY KEY,
+	id_config int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
       server_name varchar(100) NOT NULL,
       url text not null,
+	user_name varchar(100) NOT NULL,
+	password varchar(100) NOT NULL,
 	created_date date not null,
       updated_date date not null
 )
@@ -135,12 +137,14 @@ CREATE TABLE contactor (
 	id_contactor int(11) NOT NULL PRIMARY KEY,
       name varchar(100) NOT NULL,
       email varchar(255) not null,
+	user_name varchar(100) NOT NULL,
+	password varchar(100) NOT NULL,
 	created_date date not null,
       updated_date date not null
 )
 -- tạo bảng log
 CREATE TABLE log (
-      id_log int(11) NOT NULL PRIMARY KEY,
+      id_log int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	id_config int(11) NOT NULL,
       status varchar(10) NOT NULL,
       id_contactor int(11) NOT NULL,
