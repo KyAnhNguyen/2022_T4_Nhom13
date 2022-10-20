@@ -24,7 +24,7 @@ public class MyMain {
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		MyMain main = new MyMain();
-		main.loadDataIntoTable("province", "/learnGo/src/scrapper/18-10-2022/prize.csv", QUERIES.QueryTransformCSV.PRIZE);
+		main.loadDataIntoTable("province", "E:\\Film-Schedule---Data-Warehouse\\province.csv", QUERIES.QueryTransformCSV.PROVINCE);
 		System.out.println("hbybj");
 	}
 
