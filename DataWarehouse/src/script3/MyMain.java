@@ -24,18 +24,15 @@ public class MyMain {
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		MyMain main = new MyMain();
-		main.loadDataIntoTable("province", "E:\\Film-Schedule---Data-Warehouse\\province.csv", QUERIES.QueryTransformCSV.PROVINCE);
+		main.loadDataIntoTable("E:\\Film-Schedule---Data-Warehouse\\19-10-2022\\lotto.csv", QUERIES.QueryTransformCSV.LOTTO);
 		System.out.println("hbybj");
 	}
 
-	public void loadDataIntoTable(String tableName, String url, String query) throws SQLException, ClassNotFoundException {
+	public void loadDataIntoTable(String url, String query) throws SQLException, ClassNotFoundException {
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, url);
-//		ps.setString(2, tableName);
 		ps.executeUpdate();
-//		ResultSet rs = ps.executeQuery();
-//		return rs.next();
 	}
 
 }
