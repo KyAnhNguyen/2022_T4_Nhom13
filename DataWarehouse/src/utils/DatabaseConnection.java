@@ -11,15 +11,15 @@ public class DatabaseConnection {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		Connection con = DriverManager.getConnection(  
-				"jdbc:mysql://localhost:3306/staging","root",""); 
+		
 		
 	}
 	
-	public Connection connect(String database_name) throws SQLException {
+	public Connection connect(String database_name) throws SQLException, ClassNotFoundException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		conn = DriverManager.getConnection(  
 				"jdbc:mysql://localhost:3306/" + database_name,"root","");
+		
 		return conn;
 	}
 	
