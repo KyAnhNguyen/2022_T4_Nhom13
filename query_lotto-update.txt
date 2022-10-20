@@ -269,11 +269,15 @@ INSERT INTO bhxhbg_db.dbo.tb_product(id, name,...)
 SELECT id, name,... FROM bhxhbg_new.dbo.tb_product
 
 -- query date_dim
-LOAD DATA LOCAL INFILE url
-	INTO TABLE tableName
+LOAD DATA INFILE '/learnGo/src/scrapper/18-10-2022/province.csv'
+	INTO TABLE province
 	FIELDS TERMINATED BY ','
 	ENCLOSED BY '"'
 	LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(id_province, name_province, @created_date, @updated_date)
+SET created_date = STR_TO_DATE(@created_date, '%Y-%m-%d'),
+updated_date = STR_TO_DATE(@updated_date, '%Y-%m-%d');
 
 -- test
 -- 2022/09/22 = 6474

@@ -21,19 +21,19 @@ public class MyMain {
 		
 	}
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		MyMain main = new MyMain();
-		main.loadDataIntoTable("date_dim", "E:\\learnGo\\src\\scrapper\\date_dim.csv");
+		main.loadDataIntoTable("province", "/learnGo/src/scrapper/18-10-2022/prize.csv", QUERIES.QueryTransformCSV.PRIZE);
 		System.out.println("hbybj");
 	}
 
-	public void loadDataIntoTable(String tableName, String url) throws SQLException {
+	public void loadDataIntoTable(String tableName, String url, String query) throws SQLException, ClassNotFoundException {
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
-		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformCSV.LOAD_DATA);
+		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, url);
-		ps.setString(2, tableName);
-		ps.execute();
+//		ps.setString(2, tableName);
+		ps.executeUpdate();
 //		ResultSet rs = ps.executeQuery();
 //		return rs.next();
 	}
