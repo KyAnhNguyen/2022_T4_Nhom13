@@ -45,7 +45,7 @@ CREATE TABLE date_dim (
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
-    natural_key int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    natural_key int NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_province varchar(20) NOT NULL,
     id_prize varchar(10) NOT NULL,
     number int NULL,
@@ -105,7 +105,7 @@ CREATE TABLE date_dim (
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
-    natural_key int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    natural_key int NOT NULL PRIMARY KEY AUTO_INCREMENT,
     id_province varchar(20) NOT NULL,
     id_prize varchar(10) NOT NULL,
     number int NULL,
@@ -254,15 +254,35 @@ INSERT INTO `prize`(`id_prize`, `name_prize`, `value_prize`, `created_date`, `up
 * từ csv -> staging
 
 -- query chuyển file.csv vào bảng xổ số của database staging
-LOAD DATA INFILE '/learnGo/src/scrapper/09-22-2022-KA.csv'
+LOAD DATA INFILE '/Film-Schedule---Data-Warehouse/19-10-2022/lotto.csv'
 INTO TABLE lotto
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
+(@natural_key, id_province, id_prize, number, status, @created_date, @updated_date)
+SET natural_key = CONVERT(@natural_key, INT),
+created_date = (SELECT date_sk FROM date_dim WHERE full_date = DATE(NOW()) ) ,
+updated_date = STR_TO_DATE(@updated_date, '%Y-%m-%d');
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `load_data_SP` $$
+CREATE PROCEDURE `load_data_SP` (in_filepath varchar(100))
+BEGIN
+declare exec_str varchar(500);
+declare ret_val int;
+set exec_str=concat('LOAD DATA INFILE ',in_filepath ,' INTO TABLE lotto
+FIELDS TERMINATED BY \',\'
+ENCLOSED BY \'"\'
+LINES TERMINATED BY \'\n\'
+IGNORE 1 ROWS
 (natural_key, id_province, id_prize, number, status, @created_date, @updated_date)
-SET created_date = STR_TO_DATE(@created_date, '%d/%m/%Y'),
-updated_date = STR_TO_DATE(@updated_date, '%d/%m/%Y');
+SET created_date = (SELECT date_sk FROM date_dim WHERE full_date = DATE(NOW()) ) ,
+updated_date = STR_TO_DATE(@updated_date, \'%Y-%m-%d\');');
+END $$
+DELIMITER ;
+
+call load_data_SP('/Film-Schedule---Data-Warehouse/19-10-2022/lotto.csv')
 
 -- Với bạn có 2 database bhxhbg_db và bhxhbg_new insert nó vô tb_product thì làm như sau:
 INSERT INTO bhxhbg_db.dbo.tb_product(id, name,...)
