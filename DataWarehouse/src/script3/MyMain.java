@@ -24,8 +24,9 @@ public class MyMain {
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		MyMain main = new MyMain();
-		main.loadDataIntoTable("E:\\Film-Schedule---Data-Warehouse\\19-10-2022\\lotto.csv", QUERIES.QueryTransformCSV.LOTTO);
-		System.out.println("hbybj");
+//		main.loadDataToDW("province", "province", "data_warehouse", QUERIES.PROVINCE.GET_NUMBER_ROW);
+		boolean a = main.checkEqualRowInsert(3, QUERIES.PROVINCE.GET_NUMBER_ROW);
+		System.out.println("--------------" + a);
 	}
 
 	public void loadDataIntoTable(String url, String query) throws SQLException, ClassNotFoundException {
@@ -33,6 +34,24 @@ public class MyMain {
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, url);
 		ps.executeUpdate();
+	}
+	public void loadDataToDW(String tableOut, String tableIn, String databaseName, String queryTableRow) throws SQLException, ClassNotFoundException {
+		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.LOAD_DATA);
+		ps.setString(1, tableOut);
+		ps.setString(2, tableIn);
+		ps.setString(3, databaseName);
+		System.out.println(ps.executeQuery());
+//		ResultSet rs = ps.executeQuery();
+//		System.out.println(rs.getString(1));
+	}
+	
+	public boolean checkEqualRowInsert(int numberInserted, String query) throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		return numberInserted == rs.getInt(1);
 	}
 
 }
