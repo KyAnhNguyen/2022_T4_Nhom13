@@ -154,7 +154,15 @@ CREATE TABLE log (
 ALTER TABLE log ADD FOREIGN KEY(id_config) REFERENCES config(id_config);
 ALTER TABLE log ADD FOREIGN KEY(id_contactor) REFERENCES contactor(id_contactor);
 
+-- tạo bảng chứa tên bảng
+CREATE TABLE tables (
+      id_table varchar(100) NOT NULL PRIMARY KEY,
+	name_table varchar(100) NOT NULL,
+	created_date date not null,
+      updated_date date not null	
+);
 
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('province', 'province', '2022-10-21', '9999-12-31');
 * query insert province
 -- thêm dữ liệu vào bảng tỉnh, thành
 
@@ -303,6 +311,40 @@ updated_date = STR_TO_DATE(@updated_date, '%Y-%m-%d');
 -- 2022/09/22 = 6474
 SELECT date_sk from date_dim WHERE full_date in (select created_date from lotto)
 
+-- load all data from staging into ...
+DELIMITER //
+DROP PROCEDURE IF EXISTS load_data_into_dw //
+CREATE PROCEDURE load_data_into_dw(table_out varchar(100), table_in varchar(100), database_name varchar(100), OUT output varchar(20))
+BEGIN
+	IF (SELECT status FROM controller.log WHERE created_date = DATE(NOW())) = 'SU' THEN
+    	SET @t1 =CONCAT("INSERT INTO ", database_name, '.', table_in," SELECT * FROM ", 'staging.',table_out);
+ 		PREPARE stmt FROM @t1;
+ 		EXECUTE stmt;
+ 		DEALLOCATE PREPARE stmt;
+    	SET output =  'OK';
+    ELSE 
+    	SET output = 'NOT';
+    END IF;
+END;//
+DELIMITER ;
+
+call load_data_into_dw('province', 'province', 'data_warehouse', @output);
+select @output;
+
+
+DELIMITER //
+DROP FUNCTION IF EXISTS get_number_row_province //
+CREATE FUNCTION get_number_row_province()
+RETURNS INT
+BEGIN
+	DECLARE output INT;
+    SET output = (SELECT COUNT(*) FROM province);
+	RETURN output;
+END//
+DELIMITER ;
+
+select get_number_row_province()
+
 -- 
 DELIMITER //
 CREATE PROCEDURE getDate_Dim()
@@ -315,3 +357,7 @@ control (file config, log)
 log là lấy extract
 cấu trúc của table trên toàn bộ hệ thống
 3. workflow (dim, fact)
+
+INSERT INTO `config` (`id_config`, `server_name`, `url`, `user_name`, `password`, `created_date`, `updated_date`) VALUES ('', 'Xổ số Minh Ngọc', 'https://www.minhngoc.net.vn/xo-so-mien-nam.html', '', '', '2022-10-21', '9999-12-31');
+INSERT INTO `contactor` (`id_contactor`, `name`, `email`, `user_name`, `password`, `created_date`, `updated_date`) VALUES ('', 'Nguyễn Kỳ Anh', '19130011@st.hcmuaf.edu.vn', '19130011@datawh.tk', '123123', '2022-10-21', '9999-12-31');
+INSERT INTO `log` (`id_log`, `id_config`, `status`, `id_contactor`, `created_date`, `updated_date`) VALUES ('1', '1', 'SU', '1', '2022-10-21', '9999-12-31');
