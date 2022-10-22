@@ -353,6 +353,25 @@ BEGIN
 END//
 DELIMITER ;
 
+DELIMITER //
+DROP PROCEDURE IF EXISTS set_status_log //
+CREATE PROCEDURE set_status_log(status_target varchar(100))
+BEGIN
+	UPDATE log SET status = status_target WHERE created_date = DATE(NOW());
+END;//
+DELIMITER ;
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS delete_all_date_from_table //
+CREATE PROCEDURE delete_all_date_from_table()
+BEGIN
+	call delete_all_province;
+    call delete_all_prize;
+    call delete_all_lotto;
+    call delete_all_date_dim;
+END;//
+DELIMITER ;
+
 control (file config, log)
 log là lấy extract
 cấu trúc của table trên toàn bộ hệ thống
@@ -361,3 +380,7 @@ cấu trúc của table trên toàn bộ hệ thống
 INSERT INTO `config` (`id_config`, `server_name`, `url`, `user_name`, `password`, `created_date`, `updated_date`) VALUES ('', 'Xổ số Minh Ngọc', 'https://www.minhngoc.net.vn/xo-so-mien-nam.html', '', '', '2022-10-21', '9999-12-31');
 INSERT INTO `contactor` (`id_contactor`, `name`, `email`, `user_name`, `password`, `created_date`, `updated_date`) VALUES ('', 'Nguyễn Kỳ Anh', '19130011@st.hcmuaf.edu.vn', '19130011@datawh.tk', '123123', '2022-10-21', '9999-12-31');
 INSERT INTO `log` (`id_log`, `id_config`, `status`, `id_contactor`, `created_date`, `updated_date`) VALUES ('1', '1', 'SU', '1', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('prize', 'PRIZE', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('lotto', 'LOTTO', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('date_dim', 'DATE_DIM', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('province', 'PROVINCE', '2022-10-21', '9999-12-31');

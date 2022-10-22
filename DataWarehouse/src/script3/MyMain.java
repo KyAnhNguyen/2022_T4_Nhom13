@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import models.Table;
 import utils.DatabaseAttributes;
 import utils.DatabaseConnection;
 import utils.QUERIES;
@@ -17,16 +19,14 @@ public class MyMain {
 	public MyMain() throws SQLException {
 		// TODO Auto-generated constructor stub
 		dcon = new DatabaseConnection();
-		
-		
+
 	}
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		MyMain main = new MyMain();
-//		main.loadDataToDW("province", "province", "data_warehouse", QUERIES.PROVINCE.GET_NUMBER_ROW);
-		boolean a = main.checkEqualRowInsert(3, QUERIES.PROVINCE.GET_NUMBER_ROW);
-		System.out.println("--------------" + a);
+		main.transformStagingToDW();
+
 	}
 
 	public void loadDataIntoTable(String url, String query) throws SQLException, ClassNotFoundException {
@@ -35,23 +35,105 @@ public class MyMain {
 		ps.setString(1, url);
 		ps.executeUpdate();
 	}
-	public void loadDataToDW(String tableOut, String tableIn, String databaseName, String queryTableRow) throws SQLException, ClassNotFoundException {
+
+	public int loadDataToDWOneTable(String tableOut, String tableIn, String databaseName)
+			throws SQLException, ClassNotFoundException {
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.LOAD_DATA);
 		ps.setString(1, tableOut);
 		ps.setString(2, tableIn);
 		ps.setString(3, databaseName);
-		System.out.println(ps.executeQuery());
-//		ResultSet rs = ps.executeQuery();
-//		System.out.println(rs.getString(1));
+		return ps.executeUpdate();
+
 	}
-	
+
 	public boolean checkEqualRowInsert(int numberInserted, String query) throws ClassNotFoundException, SQLException {
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
 		rs.next();
 		return numberInserted == rs.getInt(1);
+	}
+
+	public boolean loadDataToDWAllTable() throws ClassNotFoundException, SQLException {
+		ArrayList<Table> tables = this.getNameTables();
+		int amountTableEffect = 0;
+		for (Table table : tables) {
+			int rowEffect = this.loadDataToDWOneTable(table.getId(), table.getId(), "data_warehouse");
+			if (this.checkEqualRowInsert(rowEffect, this.getNumberRow(table.getName()))) {
+				amountTableEffect++;
+			}
+		}
+		return tables.size() == amountTableEffect;
+	}
+
+	public boolean setStatusLog(String statusTarget) throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.SET_STATUS);
+		ps.setString(1, statusTarget);
+		return ps.executeUpdate() == 1;
+	}
+
+	public void deleteAllDataStaging() throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELELE_ALL_DATA);
+		ps.executeUpdate();
+	}
+
+	public void transformStagingToDW() throws ClassNotFoundException, SQLException {
+		if (this.loadDataToDWAllTable()) {
+			this.deleteAllDataStaging();
+			this.setStatusLog("FI");
+		}
+	}
+
+	public ArrayList<Table> getNameTables() throws ClassNotFoundException, SQLException {
+		ArrayList<Table> output = new ArrayList<>();
+		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.TABLES.GET_ALL);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			output.add(new Table(rs.getString("id_table"), rs.getString("name_table")));
+		}
+		return output;
+	}
+
+	public String getNumberRow(String name_table) {
+		String output = "";
+		switch (name_table) {
+		case "PROVINCE":
+			output = QUERIES.PROVINCE.GET_NUMBER_ROW;
+			break;
+		case "PRIZE":
+			output = QUERIES.PRIZE.GET_NUMBER_ROW;
+			break;
+		case "LOTTO":
+			output = QUERIES.LOTTO.GET_NUMBER_ROW;
+			break;
+		case "DATE_DIM":
+			output = QUERIES.DATE_DIM.GET_NUMBER_ROW;
+			break;
+		}
+		return output;
+	}
+
+	public String deleteAllFromTable(String name_table) {
+		String output = "";
+		switch (name_table) {
+		case "PROVINCE":
+			output = QUERIES.PROVINCE.DELETE_ALL;
+			break;
+		case "PRIZE":
+			output = QUERIES.PRIZE.DELETE_ALL;
+			break;
+		case "LOTTO":
+			output = QUERIES.LOTTO.DELETE_ALL;
+			break;
+		case "DATE_DIM":
+			output = QUERIES.DATE_DIM.DELETE_ALL;
+			break;
+		}
+		return output;
 	}
 
 }

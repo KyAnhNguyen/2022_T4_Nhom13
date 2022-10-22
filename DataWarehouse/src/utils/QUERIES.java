@@ -26,16 +26,32 @@ public class QUERIES {
 	// staging to data warehouse
 	public static class QueryTransformStaging {
 		public static final String LOAD_DATA = "call load_data_into_dw(?, ?, ?, @output);\r\n";
-
+		public static final String DELELE_ALL_DATA = "call delete_all_date_from_table()";
 	}
 
 	public static class PROVINCE {
-		public static final String DELETE_ALL = "";
+		public static final String DELETE_ALL = "call delete_all_province";
 		public static final String GET_NUMBER_ROW = "select get_number_row_province()";
+	}
+	public static class PRIZE {
+		public static final String DELETE_ALL = "call delete_all_prize";
+		public static final String GET_NUMBER_ROW = "select get_number_row_prize()";
+	}
+	public static class LOTTO {
+		public static final String DELETE_ALL = "call delete_all_lotto";
+		public static final String GET_NUMBER_ROW = "select get_number_row_lotto()";
+	}
+	public static class DATE_DIM {
+		public static final String DELETE_ALL = "call delete_all_date_dim";
+		public static final String GET_NUMBER_ROW = "select get_number_row_date_dim()";
+	}
+
+	public static class TABLES {
+		public static final String GET_ALL = "SELECT id_table, name_table FROM tables;";
 	}
 
 	public static class LOG {
-
+		public static final String SET_STATUS = "call set_status_log(?);";
 	}
 
 	public static class CONFIG {
