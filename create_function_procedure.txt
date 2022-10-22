@@ -1,0 +1,183 @@
+* staging
+
+-- procedure xóa dữ liệu của bảng date_dim
+DELIMITER //
+DROP FUNCTION IF EXISTS delete_all_date_dim
+CREATE PROCEDURE delete_all_date_dim()
+BEGIN
+	DELETE FROM date_dim;
+END//
+DELIMITER ;
+
+-- procedure xóa dữ liệu của bảng province
+DELIMITER //
+DROP FUNCTION IF EXISTS delete_all_province
+CREATE PROCEDURE delete_all_province()
+BEGIN
+	DELETE FROM province;
+END//
+DELIMITER ;
+
+-- procedure xóa dữ liệu của bảng prize
+DELIMITER //
+DROP FUNCTION IF EXISTS delete_all_prize
+CREATE PROCEDURE delete_all_prize()
+BEGIN
+	DELETE FROM prize;
+END//
+DELIMITER ;
+
+-- procedure xóa dữ liệu của bảng lotto
+DELIMITER //
+DROP FUNCTION IF EXISTS delete_all_lotto
+CREATE PROCEDURE delete_all_lotto()
+BEGIN
+	DELETE FROM lotto;
+END//
+DELIMITER ;
+
+
+-- procedure xóa dữ liệu tất cả các bảng
+DELIMITER //
+DROP PROCEDURE IF EXISTS delete_all_date_from_table //
+CREATE PROCEDURE delete_all_date_from_table()
+BEGIN
+	call delete_all_province;
+    call delete_all_prize;
+    call delete_all_lotto;
+    call delete_all_date_dim;
+END;//
+DELIMITER ;
+
+-- tạo procedure load data của 1 bảng của staging vào 1 bảng của database_name 
+DELIMITER //
+DROP PROCEDURE IF EXISTS load_data_into_dw //
+CREATE PROCEDURE load_data_into_dw(table_out varchar(100), table_in varchar(100), database_name varchar(100), OUT output varchar(20))
+BEGIN
+	IF (SELECT status FROM controller.log WHERE created_date = DATE(NOW())) = 'SU' THEN
+    	SET @t1 =CONCAT("INSERT INTO ", database_name, '.', table_in," SELECT * FROM ", 'staging.',table_out);
+ 		PREPARE stmt FROM @t1;
+ 		EXECUTE stmt;
+ 		DEALLOCATE PREPARE stmt;
+    	SET output =  'OK';
+    ELSE 
+    	SET output = 'NOT';
+    END IF;
+END;//
+DELIMITER ;
+
+-- lấy số dòng của bảng province
+DELIMITER //
+DROP FUNCTION IF EXISTS get_number_row_province //
+CREATE FUNCTION get_number_row_province()
+RETURNS INT
+BEGIN
+	DECLARE output INT;
+    SET output = (SELECT COUNT(*) FROM province);
+	RETURN output;
+END//
+DELIMITER ;
+
+-- lấy số dòng của bảng lotto
+DELIMITER //
+DROP FUNCTION IF EXISTS get_number_row_lotto //
+CREATE FUNCTION get_number_row_lotto()
+RETURNS INT
+BEGIN
+	DECLARE output INT;
+    SET output = (SELECT COUNT(*) FROM lotto);
+	RETURN output;
+END//
+DELIMITER ;
+
+-- lấy số dòng của bảng prize
+DELIMITER //
+DROP FUNCTION IF EXISTS get_number_row_prize //
+CREATE FUNCTION get_number_row_prize()
+RETURNS INT
+BEGIN
+	DECLARE output INT;
+    SET output = (SELECT COUNT(*) FROM prize);
+	RETURN output;
+END//
+DELIMITER ;
+
+-- lấy số dòng của bảng date_dim
+DELIMITER //
+DROP FUNCTION IF EXISTS get_number_row_date_dim //
+CREATE FUNCTION get_number_row_date_dim()
+RETURNS INT
+BEGIN
+	DECLARE output INT;
+    SET output = (SELECT COUNT(*) FROM date_dim);
+	RETURN output;
+END//
+DELIMITER ;
+
+
+* data warehouse
+
+
+
+* controller
+
+-- procedure đặt lại status cho 1 dòng vào ngày hiện tại của bảng log 
+DELIMITER //
+DROP PROCEDURE IF EXISTS set_status_log //
+CREATE PROCEDURE set_status_log(status_target varchar(100))
+BEGIN
+	UPDATE log SET status = status_target WHERE created_date = DATE(NOW());
+END;//
+DELIMITER ;
+
+
+-- tới đây thì đừng chạy nữa
+
+* từ csv -> staging
+
+-- query chuyển file.csv vào bảng xổ số của database staging
+LOAD DATA INFILE '/Film-Schedule---Data-Warehouse/19-10-2022/lotto.csv'
+INTO TABLE lotto
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(@natural_key, id_province, id_prize, number, status, @created_date, @updated_date)
+SET natural_key = CONVERT(@natural_key, INT),
+created_date = (SELECT date_sk FROM date_dim WHERE full_date = DATE(NOW()) ) ,
+updated_date = STR_TO_DATE(@updated_date, '%Y-%m-%d');
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `load_data_SP` $$
+CREATE PROCEDURE `load_data_SP` (in_filepath varchar(100))
+BEGIN
+declare exec_str varchar(500);
+declare ret_val int;
+set exec_str=concat('LOAD DATA INFILE ',in_filepath ,' INTO TABLE lotto
+FIELDS TERMINATED BY \',\'
+ENCLOSED BY \'"\'
+LINES TERMINATED BY \'\n\'
+IGNORE 1 ROWS
+(natural_key, id_province, id_prize, number, status, @created_date, @updated_date)
+SET created_date = (SELECT date_sk FROM date_dim WHERE full_date = DATE(NOW()) ) ,
+updated_date = STR_TO_DATE(@updated_date, \'%Y-%m-%d\');');
+END $$
+DELIMITER ;
+
+call load_data_SP('/Film-Schedule---Data-Warehouse/19-10-2022/lotto.csv')
+
+
+-- query date_dim
+LOAD DATA INFILE '/learnGo/src/scrapper/18-10-2022/province.csv'
+	INTO TABLE province
+	FIELDS TERMINATED BY ','
+	ENCLOSED BY '"'
+	LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(id_province, name_province, @created_date, @updated_date)
+SET created_date = STR_TO_DATE(@created_date, '%Y-%m-%d'),
+updated_date = STR_TO_DATE(@updated_date, '%Y-%m-%d');
+
+-- 2022/09/22 = 6474
+
+
