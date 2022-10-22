@@ -1,0 +1,173 @@
+* staging
+
+-- tạo database staging
+create database staging;
+
+-- tạo bảng tỉnh, thành
+CREATE TABLE province (
+    id_province varchar(20) NOT NULL PRIMARY KEY,
+    name_province varchar(100) NOT NULL,
+    created_date date not null,
+    updated_date date not null
+   );
+
+-- tạo bảng giải thưởng
+ CREATE TABLE prize (
+    id_prize varchar(10) NOT NULL PRIMARY KEY,
+    name_prize varchar(100) NOT NULL,
+    value_prize int NOT NULL,
+    created_date date not null,
+    updated_date date not null
+   );  
+
+-- tạo bảng date_dim
+
+CREATE TABLE date_dim (
+	date_sk int(11) NOT NULL PRIMARY KEY,
+	full_date varchar(100) NULL,
+	day_since_2005 varchar(100) NULL,
+	month_since_2005 varchar(100) NULL,
+	day_of_week varchar(100) NULL,
+	calendar_month varchar(100) NULL,
+	calendar_year varchar(100) NULL,
+	calendar_year_month varchar(100) NULL,
+	day_of_month varchar(100) NULL,
+	day_of_year varchar(100) NULL,
+	week_of_year_sunday varchar(100) NULL,
+	year_week_sunday varchar(100) NULL,
+	week_sunday_start varchar(100) NULL,
+	week_of_year_monday varchar(100) NULL,
+	year_week_monday varchar(100) NULL,
+	week_monday_start varchar(100) NULL,
+	holiday varchar(100) NULL,
+	date_type varchar(100) NULL
+);
+
+-- tạo bảng chính bên staging
+CREATE table lotto (
+    natural_key varchar(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_province varchar(20) NOT NULL,
+    id_prize varchar(10) NOT NULL,
+    number int NULL,
+    status varchar(10) NULL,
+    created_date int(11) not null,
+    updated_date date not null
+    );
+   ALTER TABLE lotto ADD FOREIGN KEY(id_province) REFERENCES province(id_province);
+   ALTER TABLE lotto ADD FOREIGN KEY(id_prize) REFERENCES prize(id_prize);
+   ALTER TABLE lotto ADD FOREIGN KEY(created_date) REFERENCES date_dim(date_sk);
+
+
+* data warehouse
+
+-- tạo database data warehouse
+create database data_warehouse;
+
+-- tạo bảng tỉnh, thành
+CREATE TABLE province (
+    id_province varchar(20) NOT NULL PRIMARY KEY,
+    name_province varchar(100) NOT NULL,
+    created_date date not null,
+    updated_date date not null
+   );
+
+-- tạo bảng giải thưởng
+ CREATE TABLE prize (
+    id_prize varchar(10) NOT NULL PRIMARY KEY,
+    name_prize varchar(100) NOT NULL,
+    value_prize int NOT NULL,
+    created_date date not null,
+    updated_date date not null
+   );  
+
+-- tạo bảng date_dim
+
+CREATE TABLE date_dim (
+	date_sk int(11) NOT NULL PRIMARY KEY,
+	full_date varchar(100) NULL,
+	day_since_2005 varchar(100) NULL,
+	month_since_2005 varchar(100) NULL,
+	day_of_week varchar(100) NULL,
+	calendar_month varchar(100) NULL,
+	calendar_year varchar(100) NULL,
+	calendar_year_month varchar(100) NULL,
+	day_of_month varchar(100) NULL,
+	day_of_year varchar(100) NULL,
+	week_of_year_sunday varchar(100) NULL,
+	year_week_sunday varchar(100) NULL,
+	week_sunday_start varchar(100) NULL,
+	week_of_year_monday varchar(100) NULL,
+	year_week_monday varchar(100) NULL,
+	week_monday_start varchar(100) NULL,
+	holiday varchar(100) NULL,
+	date_type varchar(100) NULL
+);
+
+-- tạo bảng chính bên staging
+CREATE table lotto (
+    natural_key varchar(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_province varchar(20) NOT NULL,
+    id_prize varchar(10) NOT NULL,
+    number int NULL,
+    status varchar(10) NULL,
+    created_date int(11) not null,
+    updated_date date not null
+    );
+   ALTER TABLE lotto ADD FOREIGN KEY(id_province) REFERENCES province(id_province);
+   ALTER TABLE lotto ADD FOREIGN KEY(id_prize) REFERENCES prize(id_prize);
+   ALTER TABLE lotto ADD FOREIGN KEY(created_date) REFERENCES date_dim(date_sk);
+
+* controller
+-- tạo database controller
+
+create database controller;
+
+-- tạo bảng config
+CREATE TABLE config (
+	id_config int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      server_name varchar(100) NOT NULL,
+      url text not null,
+	user_name varchar(100) NOT NULL,
+	password varchar(100) NOT NULL,
+	path_upload varchar(100) NOT NULL,
+	path_download varchar(100) NOT NULL,
+	created_date date not null,
+      updated_date date not null
+);
+-- tạo bảng contactor
+CREATE TABLE contactor (
+	id_contactor int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      name varchar(100) NOT NULL,
+      email varchar(255) not null,
+	user_name varchar(100) NOT NULL,
+	password varchar(100) NOT NULL,
+	created_date date not null,
+      updated_date date not null
+);
+-- tạo bảng log
+CREATE TABLE log (
+      id_log int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	id_config int(11) NOT NULL,
+      status varchar(10) NOT NULL,
+      id_contactor int(11) NOT NULL,
+	created_date date not null,
+      updated_date date not null	
+);
+ALTER TABLE log ADD FOREIGN KEY(id_config) REFERENCES config(id_config);
+ALTER TABLE log ADD FOREIGN KEY(id_contactor) REFERENCES contactor(id_contactor);
+
+-- tạo bảng chứa tên bảng
+CREATE TABLE tables (
+      id_table varchar(100) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name_table varchar(100) NOT NULL,
+	created_date date not null,
+      updated_date date not null	
+);
+
+
+INSERT INTO `contactor` (`id_contactor`, `name`, `email`, `user_name`, `password`, `created_date`, `updated_date`) VALUES ('', 'Nguyễn Kỳ Anh', '19130011@st.hcmuaf.edu.vn', '19130011@datawh.tk', '123123', '2022-10-21', '9999-12-31');
+INSERT INTO `log` (`id_log`, `id_config`, `status`, `id_contactor`, `created_date`, `updated_date`) VALUES ('1', '1', 'SU', '1', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('prize', 'PRIZE', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('lotto', 'LOTTO', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('date_dim', 'DATE_DIM', '2022-10-21', '9999-12-31');
+INSERT INTO `tables` (`id_table`, `name_table`, `created_date`, `updated_date`) VALUES ('province', 'PROVINCE', '2022-10-21', '9999-12-31');
