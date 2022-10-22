@@ -57,4 +57,16 @@ public class QUERIES {
 	public static class CONFIG {
 		public static final String GET_DATABASE_STAGING = "select url from config where server_name = 'mysql' ";
 	}
+	
+	public static class QueryController {
+		
+		public static final String INSERT_LOG = "";
+
+		public static final String GET_LOG = "SELECT * FROM log WHERE created_date = ?";
+
+		public static final String UPDATE_LOG_STATUS = "UPDATE log SET status = ? where created_date = ?";
+		
+		public static final String GET_CONFIG = "SELECT * FROM config WHERE id_config = ?";
+
+	}
 }

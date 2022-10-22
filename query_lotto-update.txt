@@ -129,6 +129,8 @@ CREATE TABLE config (
       url text not null,
 	user_name varchar(100) NOT NULL,
 	password varchar(100) NOT NULL,
+	path_upload varchar(100) NOT NULL,
+	path_download varchar(100) NOT NULL,
 	created_date date not null,
       updated_date date not null
 );

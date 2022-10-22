@@ -12,8 +12,8 @@ import org.apache.commons.net.ftp.FTPClient;
 
 public class Handle_files {
 	
-	private static String file_path_upload = "E:\\learnGo\\src\\scrapper\\";
-	private static String file_path_download = "E:\\learnGo\\src\\scrapper\\";
+	public static String file_path_upload = "E:\\learnGo\\src\\scrapper\\";
+	public static String file_path_download = "E:\\learnGo\\src\\scrapper\\";
 
 
 	public static FTPClient ftpClient;
@@ -25,7 +25,7 @@ public class Handle_files {
 		ftpClient = new FTPClient();
 		try {
 			ftpClient.connect(Config.SERVER);
-			ftpClient.login(Config.USERNAME_KA, Config.PASSWORD);
+			ftpClient.login(Config.USERNAME, Config.PASSWORD);
 			ftpClient.enterLocalPassiveMode();
 			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 		} catch (Exception e) {
@@ -92,6 +92,26 @@ public class Handle_files {
 			outputStream1.close();
 		} catch (IOException ex) {
 			System.out.println("Error: " + ex.getMessage());
+			ex.printStackTrace();
+		} finally {
+			disconnect(ftpClient);
+		}
+		return status;
+	}
+	
+	public static boolean delete_file(String filename) {
+		boolean status = false;
+		try {
+			connection();
+
+			String fileToDelete = "/data_extract/" + filename + ".csv";
+
+			boolean deleted = ftpClient.deleteFile(fileToDelete);
+
+			status = deleted ? deleted : status;
+
+		} catch (IOException ex) {
+			System.out.println("Oh no, there was an error: " + ex.getMessage());
 			ex.printStackTrace();
 		} finally {
 			disconnect(ftpClient);
