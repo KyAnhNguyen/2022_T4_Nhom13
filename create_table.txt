@@ -127,10 +127,10 @@ CREATE TABLE config (
 	id_config int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
       server_name varchar(100) NOT NULL,
       url text not null,
-	user_name varchar(100) NOT NULL,
-	password varchar(100) NOT NULL,
-	path_upload varchar(100) NOT NULL,
-	path_download varchar(100) NOT NULL,
+	user_name varchar(100) NULL,
+	password varchar(100) NULL,
+	path_upload varchar(100) NULL,
+	path_download varchar(100) NULL,
 	created_date date not null,
       updated_date date not null
 );
