@@ -45,7 +45,7 @@ CREATE TABLE date_dim (
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
-    natural_key varchar(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    natural_key varchar(255) NOT NULL PRIMARY KEY,
     id_province varchar(20) NOT NULL,
     id_prize varchar(10) NOT NULL,
     number int NULL,
@@ -105,7 +105,7 @@ CREATE TABLE date_dim (
 
 -- tạo bảng chính bên staging
 CREATE table lotto (
-    natural_key varchar(255) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    natural_key varchar(255) NOT NULL PRIMARY KEY,
     id_province varchar(20) NOT NULL,
     id_prize varchar(10) NOT NULL,
     number int NULL,
