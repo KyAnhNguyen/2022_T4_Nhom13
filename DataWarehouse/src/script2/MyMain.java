@@ -13,6 +13,7 @@ import utils.QUERIES;
 public class MyMain {
 	DatabaseConnection dbConn;
 	Connection conn;
+	public static String path_date_dim_download, path_date_dim_upload;
 
 	public MyMain() throws Exception, SQLException {
 		dbConn = new DatabaseConnection();
@@ -23,8 +24,10 @@ public class MyMain {
 		Config.USERNAME = arr_log[3];
 		Config.PASSWORD = arr_log[4];
 
-		Handle_files.file_path_upload = arr_log[5];
-		Handle_files.file_path_download = arr_log[6];
+		Handle_files.file_path_upload = arr_log[5] + java.time.LocalDate.now() + "\\";
+		Handle_files.file_path_download = arr_log[6] + java.time.LocalDate.now() + "\\";
+		path_date_dim_upload = arr_log[5];
+		path_date_dim_download = arr_log[6];
 
 //		System.out.println(Arrays.toString(arr_log));
 //		System.out.println(Config.SERVER);
@@ -58,15 +61,10 @@ public class MyMain {
 		return result;
 	}
 
-	public void loadDataIntoTable(String tableName, String url, String query)
-			throws SQLException, ClassNotFoundException {
-
-		this.conn = this.dbConn.connect(DatabaseAttributes.STAGING_DATABASE);
-
-		PreparedStatement ps = this.conn.prepareStatement(query);
-
+	public void loadDataIntoTable(String url, String query) throws SQLException, ClassNotFoundException {
+		conn = dbConn.connect(DatabaseAttributes.STAGING_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, url);
-
 		ps.executeUpdate();
 	}
 
@@ -134,33 +132,47 @@ public class MyMain {
 		return status.equals(condition.toUpperCase()) ? true : false;
 	}
 
+
+
 	public static void main(String[] args) throws Exception {
 		MyMain mm = new MyMain();
 
 		String date_current = java.time.LocalDate.now() + "";
-		
+
 //		 Step: Check the status of the log
 		if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)), "ER")) {
-			
+
 //			Step: upload file extract and check
-			if (check_upload("lotte", "prize", "province")) {
-				
+			if (check_upload("lotto", "prize", "province")) {
+
 //				Step: updated status of log -> UPFI and check update
 				if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "UPFI", date_current)) {
-					
+
 //					Step: check status of log
-					if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),"UPFI")) {
-						Handle_files.download_file("lotte");
+					if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),
+							"UPFI")) {
+						Handle_files.download_file("lotto");
 						Handle_files.download_file("prize");
 						Handle_files.download_file("province");
-						
+
 //						Step: updated status of log -> SAVE
 						if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "SAVE", date_current)) {
-							
+
 //							Step: check status of log
-							if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),"SAVE")) {
-//								load data staging
-								System.out.println("OK");
+							if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),
+									"SAVE")) {
+//								load data date_dim
+								mm.loadDataIntoTable(path_date_dim_download + "date_dim_without_quarter.csv",
+										QUERIES.QueryTransformCSV.DATE_DIM);
+								mm.loadDataIntoTable(Handle_files.file_path_download + "province.csv",
+										QUERIES.QueryTransformCSV.PROVINCE);
+								mm.loadDataIntoTable(Handle_files.file_path_download + "prize.csv",
+										QUERIES.QueryTransformCSV.PRIZE);
+								
+//								bug....
+//								mm.loadDataIntoTable(Handle_files.file_path_download + "lotto.csv",
+//										QUERIES.QueryTransformCSV.LOTTO);
+								System.out.println("load success");
 							} else {
 								System.out.println("Script 2: not same SAVE && stop program");
 								System.exit(0);
