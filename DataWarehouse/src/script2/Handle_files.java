@@ -75,7 +75,6 @@ public class Handle_files {
 	/*
 	 * Download file since FTP-Server
 	 */
-
 	public static boolean download_file(String filename) {
 		boolean status = false;
 		try {
@@ -99,6 +98,9 @@ public class Handle_files {
 		return status;
 	}
 	
+	/*
+	 * Delete file upload FTP Server
+	 */
 	public static boolean delete_file(String filename) {
 		boolean status = false;
 		try {
@@ -124,7 +126,7 @@ public class Handle_files {
 //		System.out.println(upload_file("lotto_29_09_2022(19130154)"));
 //		System.out.println(upload_file("lotto_28_09_2022(19130154)"));
 
-		System.out.println(download_file("lotto_30_09_2022(19130154)"));
+//		System.out.println(download_file("lotto_30_09_2022(19130154)"));
 //		System.out.println(download_file("lotto_29_09_2022(19130154)"));
 //		System.out.println(download_file("lotto_28_09_2022(19130154)"));
 
