@@ -131,6 +131,38 @@ END;//
 DELIMITER ;
 
 
+-- Tuan
+* staging
+
+* controller
+DELIMITER $$
+CREATE PROCEDURE get_log_today()
+BEGIN
+   SELECT * FROM log WHERE created_date = DATE(NOW());
+END; $$
+
+DELIMITER $$
+CREATE PROCEDURE get_config()
+BEGIN
+   SELECT * FROM config;
+END; $$
+
+DELIMITER $$
+CREATE PROCEDURE add_log(id_config int(11), status varchar(10), id_contactor int(11),
+created_date Date, updated_date Date)
+BEGIN
+   INSERT INTO log(id_config, status, id_contactor, created_date, updated_date) VALUES
+(id_config, status, id_contactor, created_date, updated_date);
+END; $$
+
+DROP PROCEDURE IF EXISTS `procedureName`$$
+
+DELIMITER $$
+CREATE PROCEDURE get_status_log()
+BEGIN
+   SELECT status FROM log WHERE created_date = DATE(NOW());
+END; $$
+
 -- tới đây thì đừng chạy nữa
 
 * từ csv -> staging

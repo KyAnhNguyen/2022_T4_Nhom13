@@ -64,18 +64,6 @@ public class Data {
 		}
 		return re;
 	}
-    // Lấy ra số lượng tỉnh
-	public static int getAmoutProvince() throws IOException {
-		Document d = Jsoup.connect("https://www.minhngoc.net.vn/xo-so-mien-nam.html").timeout(6000).get();
-		Elements ele = d.select("div.box_kqxs");
-
-		Elements content = ele.get(0).select("div.content table.bkqmiennam > tbody > tr");
-
-		Elements td = content.get(0).select("> td");
-
-		Elements td2 = td.get(1).select("table.rightcl");
-		return td2.size();
-	}
     // Ghi nội dung các tỉnh vào file province.csv
 	public static boolean writeToCsvProvince(String path) {
 		File file = new File(path);
@@ -85,7 +73,7 @@ public class Data {
 			BufferedWriter bw = new BufferedWriter(fw);
 
 			List<List<String>> table = getTable();
-//			if (convertDate(table.get(0).get(1), 0) == intDateCurrent()) {
+			if (convertDate(table.get(0).get(1), 0) == intDateCurrent()) {
 				List<Province> list = getAllProvince(table);
 				bw.write("\ufeff" + "id_province,name_province,created_date,updated_date");
 				bw.newLine();
@@ -94,11 +82,11 @@ public class Data {
 				}
 				bw.close();
 				fw.close();
-//			} else {
-//				bw.close();
-//				fw.close();
-//				return false;
-//			}
+			} else {
+				bw.close();
+				fw.close();
+				return false;
+			}
 		} catch (IOException e) {
 			return false;
 		}
@@ -159,7 +147,7 @@ public class Data {
 
 			List<List<String>> table = getTable();
 
-//			if (convertDate(table.get(0).get(1), 0) == intDateCurrent()) {
+			if (convertDate(table.get(0).get(1), 0) == intDateCurrent()) {
 				List<Lotto> list = getAllLotto(table);
 				bw.write("\ufeff" + "natural_key,id_province,id_prize,number,status,created_date,updated_date");
 				bw.newLine();
@@ -168,11 +156,11 @@ public class Data {
 				}
 				bw.close();
 				fw.close();
-//			} else {
-//				bw.close();
-//				fw.close();
-//				return false;
-//			}
+			} else {
+				bw.close();
+				fw.close();
+				return false;
+			}
 		} catch (IOException e) {
 			return false;
 		}

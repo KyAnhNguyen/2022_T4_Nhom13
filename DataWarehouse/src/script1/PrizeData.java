@@ -77,7 +77,7 @@ public class PrizeData {
 
 			List<List<String>> table = getTable();
 
-//			if (Data.convertDate(table.get(0).get(1), 0) == Data.intDateCurrent()) {
+			if (Data.convertDate(table.get(0).get(1), 0) == Data.intDateCurrent()) {
 				List<Prize> list = getAllPrize(table);
 				bw.write("\ufeff" + "id_prize,name_prize,value_prize,created_date,updated_date");
 				bw.newLine();
@@ -86,11 +86,11 @@ public class PrizeData {
 				}
 				bw.close();
 				fw.close();
-//			} else {
-//				bw.close();
-//				fw.close();
-//				return false;
-//			}
+			} else {
+				bw.close();
+				fw.close();
+				return false;
+			}
 		} catch (IOException e) {
 			return false;
 		}
