@@ -70,7 +70,7 @@ public class MyMain {
 	/*
 	 * GET LOG BY DATE CURRENT
 	 */
-	public String getLog(String query, String curren_date) throws ClassNotFoundException, SQLException {
+	public String getLog(String query) throws ClassNotFoundException, SQLException {
 
 		String result = "";
 
@@ -78,7 +78,7 @@ public class MyMain {
 
 		PreparedStatement ps = this.conn.prepareStatement(query);
 
-		ps.setString(1, curren_date);
+//		ps.setString(1, curren_date);
 
 		ResultSet rs = ps.executeQuery();
 
@@ -172,7 +172,7 @@ public class MyMain {
 	 * LOAD DATA INTO STATGING
 	 */
 	private static void push_staging(MyMain mm, String date_current) throws ClassNotFoundException, SQLException {
-		mm.loadDataIntoTable(Handle_files.file_path_download + "date_dim_without_quarter.csv",QUERIES.QueryTransformCSV.DATE_DIM);
+		mm.loadDataIntoTable(Handle_files.file_path_download + "date_dim_without_quarter.csv", QUERIES.QueryTransformCSV.DATE_DIM);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "province.csv", QUERIES.QueryTransformCSV.PROVINCE);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "prize.csv", QUERIES.QueryTransformCSV.PRIZE);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "lotto.csv", QUERIES.QueryTransformCSV.LOTTO);
@@ -182,6 +182,8 @@ public class MyMain {
 		}
 
 	}
+	
+	
 	/*
 	 * DOWNLOAD FILE FROM SERVER
 	 */
@@ -197,19 +199,19 @@ public class MyMain {
 //		DATE CURRENT 
 		String date_current = java.time.LocalDate.now() + "";
 //		CHECK STATUS OF LOG
-		if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)), "ER")) {
+		if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)), "ER")) {
 //			UPLOAD FILE EXTRACT AND CHECK
 			if (check_upload("lotto", "prize", "province", "date_dim_without_quarter")) {
 //				UPDATED STATUS OF LOG -> UPFI AND CHECK UPDATE
 				if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "UPFI", date_current)) {
 //					CHECK STATUS OF LOG
-					if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),"UPFI")) {
+					if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)),"UPFI")) {
 //						DOWNLOAD FILE FROM SERVER
 						download();
 //						UPDATED STATUS OF LOG -> SAVE
 						if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "SAVE", date_current)) {
 //							CHECK STATUS OF LOG
-							if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),"SAVE")) {
+							if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)),"SAVE")) {
 //								LOAD DATA INTO STATGING
 								push_staging(mm, date_current);
 							} else {
@@ -221,7 +223,7 @@ public class MyMain {
 //							????
 						}
 					} else {
-						if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG, date_current)),"SAVE")) {
+						if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)),"SAVE")) {
 //							LOAD DATA INTO STATGING
 							push_staging(mm, date_current);
 						} else {

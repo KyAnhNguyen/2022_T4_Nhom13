@@ -42,10 +42,12 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS delete_all_date_from_table //
 CREATE PROCEDURE delete_all_date_from_table()
 BEGIN
+call 
+delete_all_lotto;
 	call delete_all_province;
     call delete_all_prize;
-    call delete_all_lotto;
     call delete_all_date_dim;
+
 END;//
 DELIMITER ;
 

@@ -110,13 +110,13 @@ public class MyMain {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException, SQLException {
 		MyMain myMain = new MyMain();
-//		System.out.println(myMain.run());
+		System.out.println(myMain.run());
 //		for (List<String> list:myMain.readCsv("script1Data/24-10-2022/lotto.csv")) {
 //			System.out.println(list);
 //		}
-		System.out.println(PrizeData.writeToCsvPrize("script1Data/25-10-2022" + "/prize.csv"));
-		System.out.println(Data.writeToCsvProvince("script1Data/25-10-2022" + "/province.csv"));
-		System.out.println(Data.writeToCsvLotto("script1Data/25-10-2022" + "/lotto.csv"));
+//		System.out.println(PrizeData.writeToCsvPrize("script1Data/25-10-2022" + "/prize.csv"));
+//		System.out.println(Data.writeToCsvProvince("script1Data/25-10-2022" + "/province.csv"));
+//		System.out.println(Data.writeToCsvLotto("script1Data/25-10-2022" + "/lotto.csv"));
 
 	}
 
