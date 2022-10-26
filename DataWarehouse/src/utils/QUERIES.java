@@ -55,10 +55,14 @@ public class QUERIES {
 
 	public static class LOG {
 		public static final String SET_STATUS = "call set_status_log(?);";
+		public static final String GET_LOG = "call get_log_today();";
+		public static final String ADD_LOG = "call add_log(?, ?, ?, ?, ?);";
+		public static final String GET_STATUS_LOG = "call get_status_log();";
 	}
 
 	public static class CONFIG {
 		public static final String GET_DATABASE_STAGING = "select url from config where server_name = 'mysql' ";
+		public static final String GET_CONFIG = "call get_config;";
 	}
 
 	public static class QueryController {
