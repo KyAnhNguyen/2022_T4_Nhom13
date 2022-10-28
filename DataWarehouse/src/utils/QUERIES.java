@@ -6,9 +6,7 @@ public class QUERIES {
 	public static class QueryTransformCSV {
 		public static final String DATE_DIM = "LOAD DATA INFILE ? INTO TABLE date_dim FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n'";
 		public static final String LOTTO = "LOAD DATA INFILE ? \r\n" + "INTO TABLE lotto\r\n"
-				+ "FIELDS TERMINATED BY ','\r\n"
-				+ "ENCLOSED BY '\"'\r\n" 
-				+ "LINES TERMINATED BY '\\n'\r\n"
+				+ "FIELDS TERMINATED BY ','\r\n" + "ENCLOSED BY '\"'\r\n" + "LINES TERMINATED BY '\\n'\r\n"
 				+ "IGNORE 1 ROWS\r\n"
 				+ "(natural_key, id_province, id_prize, number, status, created_date, @updated_date)\r\n"
 				+ "SET updated_date = STR_TO_DATE(@updated_date, '%Y-%m-%d');";
@@ -75,5 +73,9 @@ public class QUERIES {
 
 		public static final String GET_CONFIG = "SELECT * FROM config WHERE id_config = ?";
 
+	}
+
+	public static class CONTACTOR {
+		public static final String GET_ID_CONTACTOR = "call get_id_contactor(?);";
 	}
 }
