@@ -10,7 +10,7 @@ public class Province {
 	private String name_province;
 	private String created_date;
 	private String updated_date;
-	
+
 	public Province(String id_province, String name_province, String created_date, String updated_date) {
 		super();
 		this.id_province = id_province;
@@ -18,7 +18,7 @@ public class Province {
 		this.created_date = created_date;
 		this.updated_date = updated_date;
 	}
-	
+
 	public void writeData(File file, FileWriter fw, BufferedWriter bw) {
 		try {
 			bw.write("\ufeff" + toString());
@@ -31,11 +31,7 @@ public class Province {
 
 	@Override
 	public String toString() {
-		return id_province + "," + name_province + ","
-				+ created_date + "," + updated_date;
+		return id_province + "," + name_province + "," + created_date + "," + updated_date;
 	}
-	
-	
-	
 
 }

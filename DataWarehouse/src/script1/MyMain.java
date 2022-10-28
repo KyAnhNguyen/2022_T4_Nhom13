@@ -1,10 +1,13 @@
 package script1;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 public class MyMain {
@@ -24,6 +26,8 @@ public class MyMain {
 		LocalDateTime current = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		String folderName = current.format(formatter);
+		File f = new File("script1Data");
+		f.mkdir();
 		path = "script1Data/" + folderName;
 	}
     // chuyển String dạng yyyy-MM-dd sang kiểu dữ liệu Date
@@ -41,7 +45,10 @@ public class MyMain {
 				return 1;
 			LocalDateTime current = LocalDateTime.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			dao.addLog(list.get(0).getId_config(), "null", 1,
+			dao.addLog(list.get(0).getId_config(), "null", dao.getIdContactor(script2.Config.USERNAME),
+					new java.sql.Date(formatDate(current.format(formatter)).getTime()),
+					new java.sql.Date(formatDate("9999-12-31").getTime()));
+			dao.addLog(list.get(1).getId_config(), "null", dao.getIdContactor(script2.Config.USERNAME),
 					new java.sql.Date(formatDate(current.format(formatter)).getTime()),
 					new java.sql.Date(formatDate("9999-12-31").getTime()));
 			return flowByStatus();
@@ -49,7 +56,7 @@ public class MyMain {
 	}
     // hỗ trợ chạy script1 từ kiểm tra status log tới hết
 	public int flowByStatus() throws IOException, ClassNotFoundException, SQLException {
-		if (dao.getStatusLog().equals("ER")) {
+		if (dao.getStatusLog().equals("ERER")) {
 			return 1;
 		} else {
 			File f = new File(path);
@@ -57,7 +64,7 @@ public class MyMain {
 			System.out.println(PrizeData.writeToCsvPrize(path + "/prize.csv"));
 			System.out.println(Data.writeToCsvProvince(path + "/province.csv"));
 			System.out.println(Data.writeToCsvLotto(path + "/lotto.csv"));
-
+			System.out.println(loadDateDim("F:\\general folder\\monHocNam4Ki1\\dataWarehouse\\document\\Date_Dim\\date_dim_without_quarter.csv", path + "/date_dim_without_quarter.csv"));
 			if (checkData()) {
 				dao.setStatusLog("ER");
 			} else {
@@ -107,17 +114,25 @@ public class MyMain {
 		return checkRow() && checkCell(path + "/lotto.csv") && checkCell(path + "/province.csv")
 				&& checkCell(path + "/prize.csv");
 	}
+	// load date dim
+	public boolean loadDateDim(String source, String dest) throws IOException {
+		File file = new File(source);
+		if (!file.exists()) return false;
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
+		byte[] buffer = new byte[1024];
+		int length;
+        while ((length = bis.read(buffer)) > 0) {
+            bos.write(buffer, 0, length);
+        }
+        bis.close();
+        bos.close();
+		return true;
+	}
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException, SQLException {
 		MyMain myMain = new MyMain();
 		System.out.println(myMain.run());
-//		for (List<String> list:myMain.readCsv("script1Data/24-10-2022/lotto.csv")) {
-//			System.out.println(list);
-//		}
-//		System.out.println(PrizeData.writeToCsvPrize("script1Data/25-10-2022" + "/prize.csv"));
-//		System.out.println(Data.writeToCsvProvince("script1Data/25-10-2022" + "/province.csv"));
-//		System.out.println(Data.writeToCsvLotto("script1Data/25-10-2022" + "/lotto.csv"));
-
 	}
 
 }

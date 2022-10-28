@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,9 +17,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 public class PrizeData {
+	private static Dao dao = new Dao();
 	// Lấy ra bảng xổ số ở trên web (https://www.minhngoc.net.vn/doi-so-trung.html)
-	public static List<List<String>> getTable() throws IOException {
-		Document d = Jsoup.connect("https://www.minhngoc.net.vn/doi-so-trung.html").timeout(6000).get();
+	public static List<List<String>> getTable() throws IOException, ClassNotFoundException, SQLException {
+		Document d = Jsoup.connect(dao.getConfig().get(1).getUrl()).timeout(6000).get();
 		Elements ele = d.select("div.box_kqxs");
 
 		Elements content = ele.get(0).select("div.content table.bkqmiennam > tbody > tr");
@@ -68,7 +70,7 @@ public class PrizeData {
 		return re;
 	}
 	// Ghi nội dung các giải thưởng vào file prize.csv
-	public static boolean writeToCsvPrize(String path) {
+	public static boolean writeToCsvPrize(String path) throws ClassNotFoundException, SQLException {
 		File file = new File(path);
 		FileWriter fw;
 		try {
@@ -96,9 +98,4 @@ public class PrizeData {
 		}
 		return true;
 	}
-	public static void main(String[] args) {
-		System.out.println(writeToCsvPrize("script1Data/23-10-2022/prize.csv"));
-	}
-
-
 }

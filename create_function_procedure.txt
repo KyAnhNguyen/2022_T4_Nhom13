@@ -165,6 +165,13 @@ BEGIN
    SELECT status FROM log WHERE created_date = DATE(NOW());
 END; $$
 
+
+DELIMITER $$
+CREATE PROCEDURE get_id_contactor(user_name varchar(100))
+BEGIN
+   SELECT id_contactor FROM contactor WHERE contactor.user_name = user_name;
+END; $$
+
 -- tới đây thì đừng chạy nữa
 
 * từ csv -> staging

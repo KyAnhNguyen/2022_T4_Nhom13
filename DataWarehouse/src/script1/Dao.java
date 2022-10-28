@@ -30,8 +30,13 @@ public class Dao {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.GET_LOG);
 		ResultSet rs = ps.executeQuery();
-		if (rs.next())
-			return true;
+		int count = 0;
+		while (rs.next()) {
+			count++;
+			if (count == 2) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -47,9 +52,20 @@ public class Dao {
 		}
 		return re;
 	}
-    // Thêm 1 dòng log
-	public boolean addLog(int id_config, String status, int id_contactor, Date created_date,
-			Date updated_date) throws ClassNotFoundException, SQLException {
+
+	// Lấy ra servername của config
+	public String getServerName() throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.CONFIG.GET_DATABASE_STAGING);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next())
+			return rs.getString(1);
+		return "";
+	}
+
+	// Thêm 1 dòng log
+	public boolean addLog(int id_config, String status, int id_contactor, Date created_date, Date updated_date)
+			throws ClassNotFoundException, SQLException {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.ADD_LOG);
 		ps.setInt(1, id_config);
@@ -61,38 +77,40 @@ public class Dao {
 			return true;
 		return false;
 	}
+
 	// Trả về status của log hiện tại
 	public String getStatusLog() throws ClassNotFoundException, SQLException {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.GET_STATUS_LOG);
 		ResultSet rs = ps.executeQuery();
-		if (rs.next())
-			return rs.getString(1);
-		return "";
+		String check = "";
+		while (rs.next()) {
+			check += rs.getString(1);
+		}
+		return check;
 	}
-    // Set status của log
+
+	// Set status của log
 	public boolean setStatusLog(String statusTarget) throws ClassNotFoundException, SQLException {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.SET_STATUS);
 		ps.setString(1, statusTarget);
 		return ps.executeUpdate() == 1;
 	}
-	
-	public static void main(String[] args) throws ParseException, ClassNotFoundException, SQLException {
-		Dao dao = new Dao();
-//		System.out.println(dao.hasLog());
-//		System.out.println(dao.getConfig().size());
-		
-//		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//		String date1 = "2022-10-24";
-//		String date2 = "9999-12-12";
-//		java.util.Date myDate1 = formatter.parse(date1);
-//		java.util.Date myDate2 = formatter.parse(date2);
-//		System.out.println(dao.addLog(1, "ER", 1, new java.sql.Date(myDate1.getTime()), new java.sql.Date(myDate2.getTime())));
-		
-//		System.out.println(dao.getStatusLog());
-		
-//		System.out.println(dao.setStatusLog("ER"));
 
+	// Trả về status của log hiện tại
+	public int getIdContactor(String userName) throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.CONTACTOR.GET_ID_CONTACTOR);
+		ps.setString(1, userName);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next())
+			return rs.getInt(1);
+		return 0;
+	}
+
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		Dao dao = new Dao();
+		System.out.println(dao.getStatusLog());
 	}
 }

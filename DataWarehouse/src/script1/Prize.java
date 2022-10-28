@@ -40,9 +40,4 @@ public class Prize {
 		return id_prize + "," + name_prize + "," + value_prize + "," + created_date + "," + updated_date;
 	}
 
-	public static void main(String[] args) {
-//		Prize p = new Prize("001", "nhat", 100000, 1, LocalDateTime.now());
-//		System.out.println(p);
-	}
-
 }
