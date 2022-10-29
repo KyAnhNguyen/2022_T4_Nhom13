@@ -48,7 +48,7 @@ public class PrizeData {
 
 		Elements td2 = td.get(1).select("table.rightcl");
 
-		Elements col = td2.get(3).select("tr");
+		Elements col = td2.get(td2.size() - 1).select("tr");
 		ArrayList<String> strList = new ArrayList<>();
 		for (Element e : col) {
 			strList.add(e.text());
