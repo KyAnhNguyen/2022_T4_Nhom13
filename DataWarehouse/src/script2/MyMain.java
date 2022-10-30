@@ -23,8 +23,15 @@ public class MyMain {
 		Config.USERNAME = arr_log[3];
 		Config.PASSWORD = arr_log[4];
 
-		Handle_files.file_path_upload = arr_log[5] + java.time.LocalDate.now() + "\\";
-		Handle_files.file_path_download = arr_log[6] + java.time.LocalDate.now() + "\\";
+		Handle_files.file_path_upload = arr_log[5] + date_now() + "\\";
+		Handle_files.file_path_download = arr_log[6] + date_now() + "\\";
+	}
+	
+	public static String date_now() {
+		String s = java.time.LocalDate.now() + "";
+		String[] s1 = s.split("-");
+		String s2 = "";
+		return s2 + s1[2] + "-" + s1[1] + "-" + s1[0];
 	}
 
 	/*
