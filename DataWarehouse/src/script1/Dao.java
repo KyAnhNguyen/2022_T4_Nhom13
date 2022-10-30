@@ -30,13 +30,7 @@ public class Dao {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.GET_LOG);
 		ResultSet rs = ps.executeQuery();
-		int count = 0;
-		while (rs.next()) {
-			count++;
-			if (count == 2) {
-				return true;
-			}
-		}
+		if (rs.next()) return true;
 		return false;
 	}
 
@@ -83,11 +77,8 @@ public class Dao {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.GET_STATUS_LOG);
 		ResultSet rs = ps.executeQuery();
-		String check = "";
-		while (rs.next()) {
-			check += rs.getString(1);
-		}
-		return check;
+		if (rs.next()) return rs.getString(1);
+		return "";
 	}
 
 	// Set status của log

@@ -45,10 +45,7 @@ public class MyMain {
 				return 1;
 			LocalDateTime current = LocalDateTime.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			dao.addLog(list.get(0).getId_config(), "null", dao.getIdContactor(script2.Config.USERNAME),
-					new java.sql.Date(formatDate(current.format(formatter)).getTime()),
-					new java.sql.Date(formatDate("9999-12-31").getTime()));
-			dao.addLog(list.get(1).getId_config(), "null", dao.getIdContactor(script2.Config.USERNAME),
+			dao.addLog(list.get(0).getId_config(), "null", 1,
 					new java.sql.Date(formatDate(current.format(formatter)).getTime()),
 					new java.sql.Date(formatDate("9999-12-31").getTime()));
 			return flowByStatus();
@@ -56,7 +53,7 @@ public class MyMain {
 	}
     // hỗ trợ chạy script1 từ kiểm tra status log tới hết
 	public int flowByStatus() throws IOException, ClassNotFoundException, SQLException {
-		if (dao.getStatusLog().equals("ERER")) {
+		if (dao.getStatusLog().equals("ER")) {
 			return 1;
 		} else {
 			File f = new File(path);
@@ -64,7 +61,6 @@ public class MyMain {
 			System.out.println(PrizeData.writeToCsvPrize(path + "/prize.csv"));
 			System.out.println(Data.writeToCsvProvince(path + "/province.csv"));
 			System.out.println(Data.writeToCsvLotto(path + "/lotto.csv"));
-			System.out.println(loadDateDim("F:\\general folder\\monHocNam4Ki1\\dataWarehouse\\document\\Date_Dim\\date_dim_without_quarter.csv", path + "/date_dim_without_quarter.csv"));
 			if (checkData()) {
 				dao.setStatusLog("ER");
 			} else {
