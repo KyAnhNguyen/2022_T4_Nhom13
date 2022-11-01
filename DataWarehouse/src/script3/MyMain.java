@@ -58,6 +58,8 @@ public class MyMain {
 	public boolean loadDataToDWAllTable() throws ClassNotFoundException, SQLException {
 		ArrayList<Table> tables = this.getNameTables();
 		int amountTableEffect = 0;
+		this.deleteDataDateDim();
+		this.deleteDataPrize();
 		for (Table table : tables) {
 			int rowEffect = this.loadDataToDWOneTable(table.getId(), table.getId(), "data_warehouse");
 			if (this.checkEqualRowInsert(rowEffect, this.getNumberRow(table.getName()))) {
@@ -77,6 +79,18 @@ public class MyMain {
 	public void deleteAllDataStaging() throws ClassNotFoundException, SQLException {
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELELE_ALL_DATA);
+		ps.executeUpdate();
+	}
+	
+	public void deleteDataDateDim() throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.DW_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELETE_DATA_DATE_DIM_DW);
+		ps.executeUpdate();
+	}
+	
+	public void deleteDataPrize() throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.DW_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELETE_DATA_PRIZE_DW);
 		ps.executeUpdate();
 	}
 
@@ -117,23 +131,6 @@ public class MyMain {
 		return output;
 	}
 
-	public String deleteAllFromTable(String name_table) {
-		String output = "";
-		switch (name_table) {
-		case "PROVINCE":
-			output = QUERIES.PROVINCE.DELETE_ALL;
-			break;
-		case "PRIZE":
-			output = QUERIES.PRIZE.DELETE_ALL;
-			break;
-		case "LOTTO":
-			output = QUERIES.LOTTO.DELETE_ALL;
-			break;
-		case "DATE_DIM":
-			output = QUERIES.DATE_DIM.DELETE_ALL;
-			break;
-		}
-		return output;
-	}
+	
 
 }

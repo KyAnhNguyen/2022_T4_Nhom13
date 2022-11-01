@@ -25,6 +25,8 @@ public class QUERIES {
 	public static class QueryTransformStaging {
 		public static final String LOAD_DATA = "call load_data_into_dw(?, ?, ?, @output);\r\n";
 		public static final String DELELE_ALL_DATA = "call delete_all_date_from_table()";
+		public static final String DELETE_DATA_DATE_DIM_DW = "call delete_all_date_dim()";
+		public static final String DELETE_DATA_PRIZE_DW = "call delete_all_prize()";
 	}
 
 	public static class PROVINCE {

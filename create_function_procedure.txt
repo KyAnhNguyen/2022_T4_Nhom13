@@ -2,7 +2,7 @@
 
 -- procedure xóa dữ liệu của bảng date_dim
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_date_dim
+DROP PROCEDURE IF EXISTS delete_all_date_dim
 CREATE PROCEDURE delete_all_date_dim()
 BEGIN
 	DELETE FROM date_dim;
@@ -11,7 +11,7 @@ DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng province
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_province
+DROP PROCEDURE IF EXISTS delete_all_province
 CREATE PROCEDURE delete_all_province()
 BEGIN
 	DELETE FROM province;
@@ -20,7 +20,7 @@ DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng prize
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_prize
+DROP PROCEDURE IF EXISTS delete_all_prize
 CREATE PROCEDURE delete_all_prize()
 BEGIN
 	DELETE FROM prize;
@@ -29,7 +29,7 @@ DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng lotto
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_lotto
+DROP PROCEDURE IF EXISTS delete_all_lotto
 CREATE PROCEDURE delete_all_lotto()
 BEGIN
 	DELETE FROM lotto;
@@ -119,6 +119,21 @@ DELIMITER ;
 
 * data warehouse
 
+-- procedure xóa dữ liệu của bảng date_dim
+DELIMITER //
+CREATE PROCEDURE delete_all_date_dim()
+BEGIN
+	DELETE FROM date_dim;
+END//
+DELIMITER ;
+
+-- procedure xóa dữ liệu của bảng prize
+DELIMITER //
+CREATE PROCEDURE delete_all_prize()
+BEGIN
+	DELETE FROM prize;
+END//
+DELIMITER ;
 
 
 * controller
