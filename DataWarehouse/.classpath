@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/admin/Downloads/final/LOTTO-Data-Warehouse/mysql-connector-java-8.0.27.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admin/Downloads/final/LOTTO-Data-Warehouse/commons-net-3.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin/Downloads/final/LOTTO-Data-Warehouse/jsoup-1.15.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
