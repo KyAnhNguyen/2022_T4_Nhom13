@@ -69,11 +69,11 @@ public class QUERIES {
 
 		public static final String INSERT_LOG = "";
 
-		public static final String GET_LOG = "SELECT * FROM log WHERE created_date = Date(Now())";
+//		public static final String GET_LOG = "SELECT * FROM log WHERE created_date = Date(Now())";
 
-		public static final String UPDATE_LOG_STATUS = "UPDATE log SET status = ? where created_date = ?";
+//		public static final String UPDATE_LOG_STATUS = "UPDATE log SET status = ? where created_date = ?";
 
-		public static final String GET_CONFIG = "SELECT * FROM config WHERE id_config = ?";
+//		public static final String GET_CONFIG = "SELECT * FROM config WHERE id_config = ?";
 
 	}
 
