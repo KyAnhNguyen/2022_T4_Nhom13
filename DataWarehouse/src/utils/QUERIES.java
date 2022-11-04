@@ -30,23 +30,31 @@ public class QUERIES {
 	}
 
 	public static class PROVINCE {
-		public static final String DELETE_ALL = "call delete_all_province";
-		public static final String GET_NUMBER_ROW = "select get_number_row_province()";
+		public static final String GET_DIFF = "call get_diff_province;";
+		public static final String GET_BY_ID_DW = "select * from data_warehouse.province where id_province = ?";
+		public static final String UPDATE = "call p_update_province_dw(?)";
+		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_province_dw(?)";
 	}
 
 	public static class PRIZE {
-		public static final String DELETE_ALL = "call delete_all_prize";
-		public static final String GET_NUMBER_ROW = "select get_number_row_prize()";
+		public static final String GET_DIFF = "call get_diff_prize;";
+		public static final String GET_BY_ID_DW = "select * from data_warehouse.prize where id_prize = ?";
+		public static final String UPDATE = "call p_update_prize_dw(?)";
+		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_prize_dw(?)";
 	}
 
 	public static class LOTTO {
-		public static final String DELETE_ALL = "call delete_all_lotto";
-		public static final String GET_NUMBER_ROW = "select get_number_row_lotto()";
+		public static final String GET_DIFF = "call get_diff_lotto;";
+		public static final String GET_BY_ID_DW = "select * from data_warehouse.lotto where natural_key = ?";
+		public static final String UPDATE = "call p_update_lotto_dw(?)";
+		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_lotto_dw(?)";
 	}
 
 	public static class DATE_DIM {
-		public static final String DELETE_ALL = "call delete_all_date_dim";
-		public static final String GET_NUMBER_ROW = "select get_number_row_date_dim()";
+		public static final String GET_DIFF = "call get_diff_test_date_dim;";
+		public static final String GET_BY_ID_DW = "select * from data_warehouse.date_dim where date_sk = ?";
+		public static final String UPDATE = "call p_update_date_dim_dw(?)";
+		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_date_dim_dw(?)";
 	}
 
 	public static class TABLES {
