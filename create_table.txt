@@ -3,6 +3,8 @@
 -- tạo database staging
 create database staging;
 
+ALTER DATABASE staging DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+
 -- tạo bảng tỉnh, thành
 CREATE TABLE province (
     id_province varchar(20) NOT NULL PRIMARY KEY,
@@ -63,6 +65,8 @@ CREATE table lotto (
 -- tạo database data warehouse
 create database data_warehouse;
 
+ALTER DATABASE data_warehouse DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+
 -- tạo bảng tỉnh, thành
 CREATE TABLE province (
     id_province varchar(20) NOT NULL PRIMARY KEY,
@@ -122,17 +126,19 @@ CREATE table lotto (
 
 create database controller;
 
+ALTER DATABASE staging DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+
 -- tạo bảng config
 CREATE TABLE config (
-	id_config int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-      server_name varchar(100) NOT NULL,
-      url text not null,
-	user_name varchar(100) NULL,
-	password varchar(100) NULL,
-	path_upload varchar(100) NULL,
-	path_download varchar(100) NULL,
-	created_date date not null,
-      updated_date date not null
+  id_config int(11) NOT NULL PRIMARY KEY,
+  server_name varchar(100) NOT NULL,
+  url text NOT NULL,
+  username varchar(100) NOT NULL,
+  password varchar(100) NOT NULL,
+  path_upload varchar(150) NOT NULL,
+  path_download varchar(150) NOT NULL,
+  created_date date NOT NULL,
+  updated_date date NOT NULL
 );
 -- tạo bảng contactor
 CREATE TABLE contactor (
@@ -158,7 +164,7 @@ ALTER TABLE log ADD FOREIGN KEY(id_contactor) REFERENCES contactor(id_contactor)
 
 -- tạo bảng chứa tên bảng
 CREATE TABLE tables (
-      id_table varchar(100) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      id_table varchar(100) NOT NULL PRIMARY KEY,
 	name_table varchar(100) NOT NULL,
 	created_date date not null,
       updated_date date not null	

@@ -1,8 +1,8 @@
 * staging
 
 -- procedure xóa dữ liệu của bảng date_dim
+DROP PROCEDURE IF EXISTS delete_all_date_dim
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_date_dim
 CREATE PROCEDURE delete_all_date_dim()
 BEGIN
 	DELETE FROM date_dim;
@@ -10,8 +10,8 @@ END//
 DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng province
+DROP PROCEDURE IF EXISTS delete_all_province
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_province
 CREATE PROCEDURE delete_all_province()
 BEGIN
 	DELETE FROM province;
@@ -19,8 +19,8 @@ END//
 DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng prize
+DROP PROCEDURE IF EXISTS delete_all_prize
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_prize
 CREATE PROCEDURE delete_all_prize()
 BEGIN
 	DELETE FROM prize;
@@ -28,8 +28,8 @@ END//
 DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng lotto
+DROP PROCEDURE IF EXISTS delete_all_lotto
 DELIMITER //
-DROP FUNCTION IF EXISTS delete_all_lotto
 CREATE PROCEDURE delete_all_lotto()
 BEGIN
 	DELETE FROM lotto;
@@ -38,8 +38,8 @@ DELIMITER ;
 
 
 -- procedure xóa dữ liệu tất cả các bảng
+DROP PROCEDURE IF EXISTS delete_all_date_from_table
 DELIMITER //
-DROP PROCEDURE IF EXISTS delete_all_date_from_table //
 CREATE PROCEDURE delete_all_date_from_table()
 BEGIN
 call 
@@ -51,71 +51,194 @@ delete_all_lotto;
 END;//
 DELIMITER ;
 
--- tạo procedure load data của 1 bảng của staging vào 1 bảng của database_name 
+-- lấy các khóa có sự thay đổi trong staging 1
+
+DROP Procedure if Exists `get_diff_test_date_dim`;
 DELIMITER //
-DROP PROCEDURE IF EXISTS load_data_into_dw //
-CREATE PROCEDURE load_data_into_dw(table_out varchar(100), table_in varchar(100), database_name varchar(100), OUT output varchar(20))
-BEGIN
-	IF (SELECT status FROM controller.log WHERE created_date = DATE(NOW())) = 'SU' THEN
-    	SET @t1 =CONCAT("INSERT INTO ", database_name, '.', table_in," SELECT * FROM ", 'staging.',table_out);
- 		PREPARE stmt FROM @t1;
- 		EXECUTE stmt;
- 		DEALLOCATE PREPARE stmt;
-    	SET output =  'OK';
-    ELSE 
-    	SET output = 'NOT';
-    END IF;
-END;//
+CREATE PROCEDURE get_diff_test_date_dim()
+BEGIN 
+	( (select A.date_sk
+ from staging.date_dim A 
+ left join data_warehouse.date_dim B
+              on A.date_sk = B.date_sk 
+              where 
+              A.full_date != B.full_date
+              OR A.day_since_2005 != B.day_since_2005
+              OR A.month_since_2005 != B.month_since_2005
+              OR A.day_of_week != B.day_of_week )  
+              UNION 
+              (select A.date_sk from staging.date_dim A where A.date_sk not in (select B.date_sk from data_warehouse.date_dim B)));
+END //
 DELIMITER ;
 
--- lấy số dòng của bảng province
+-- 2
+
+DROP Procedure if Exists `p_update_date_dim_dw`;
 DELIMITER //
-DROP FUNCTION IF EXISTS get_number_row_province //
-CREATE FUNCTION get_number_row_province()
-RETURNS INT
-BEGIN
-	DECLARE output INT;
-    SET output = (SELECT COUNT(*) FROM province);
-	RETURN output;
+CREATE PROCEDURE p_update_date_dim_dw(date_sk_temp int(11))
+BEGIN 
+	UPDATE data_warehouse.date_dim
+	SET full_date = (SELECT full_date FROM staging.date_dim WHERE date_sk = date_sk_temp),
+    	day_since_2005 = (SELECT day_since_2005 FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        month_since_2005 = (SELECT month_since_2005 FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        day_of_week = (SELECT day_of_week FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        calendar_month = (SELECT calendar_month FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        calendar_year = (SELECT calendar_year FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        calendar_year_month = (SELECT calendar_year_month FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        day_of_month = (SELECT day_of_month FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        day_of_year = (SELECT day_of_year FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        week_of_year_sunday = (SELECT week_of_year_sunday FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        year_week_sunday = (SELECT year_week_sunday FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        week_sunday_start = (SELECT week_sunday_start FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        week_of_year_monday = (SELECT week_of_year_monday FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        year_week_monday = (SELECT year_week_monday FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        week_monday_start = (SELECT week_monday_start FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        holiday = (SELECT holiday FROM staging.date_dim WHERE date_sk = date_sk_temp),
+        date_type = (SELECT date_type FROM staging.date_dim WHERE date_sk = date_sk_temp)
+	WHERE date_sk = date_sk_temp;
+END //
+DELIMITER ;
+
+-- insert 3
+DROP Procedure if Exists `p_insert_date_dim_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_date_dim_dw(date_sk_temp int(11))
+BEGIN 
+	INSERT INTO data_warehouse.date_dim SELECT * FROM staging.date_dim WHERE staging.date_dim.date_sk = date_sk_temp;
+END //
+DELIMITER ;
+
+-- 4
+DROP Procedure if Exists `get_diff_prize`;
+DELIMITER //
+CREATE PROCEDURE get_diff_prize()
+BEGIN 
+(select A.id_prize
+ from staging.prize A 
+ left join data_warehouse.prize B
+              on A.id_prize = B.id_prize
+              where 
+              A.name_prize != B.name_prize
+              OR A.value_prize != B.value_prize
+              OR A.created_date != B.created_date
+              OR A.updated_date != B.updated_date )  
+              UNION 
+              (select A.id_prize from staging.prize A where A.id_prize not in (select B.id_prize from data_warehouse.prize B));
 END//
 DELIMITER ;
 
--- lấy số dòng của bảng lotto
+-- 5
+DROP Procedure if Exists `p_update_prize_dw`;
 DELIMITER //
-DROP FUNCTION IF EXISTS get_number_row_lotto //
-CREATE FUNCTION get_number_row_lotto()
-RETURNS INT
-BEGIN
-	DECLARE output INT;
-    SET output = (SELECT COUNT(*) FROM lotto);
-	RETURN output;
+CREATE PROCEDURE p_update_prize_dw(id_prize_temp varchar(10))
+BEGIN 
+	UPDATE data_warehouse.prize
+	SET name_prize = (SELECT name_prize FROM staging.prize WHERE id_prize = id_prize_temp),
+    value_prize = (SELECT value_prize FROM staging.prize WHERE id_prize = id_prize_temp),
+    created_date = (SELECT created_date FROM staging.prize WHERE id_prize = id_prize_temp),
+    updated_date = (SELECT updated_date FROM staging.prize WHERE id_prize = id_prize_temp)
+	WHERE id_prize = id_prize_temp;
+END //
+DELIMITER ;
+
+-- 6
+DROP Procedure if Exists `p_insert_prize_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_prize_dw(id_prize_temp varchar(10))
+BEGIN 
+	INSERT INTO data_warehouse.prize SELECT * FROM staging.prize WHERE staging.prize.id_prize = id_prize_temp;
+END //
+DELIMITER ;
+
+-- 7
+
+DROP Procedure if Exists `get_diff_province`;
+DELIMITER //
+CREATE PROCEDURE get_diff_province()
+BEGIN 
+(select A.id_province
+ from staging.province A 
+ left join data_warehouse.province B
+              on A.id_province = B.id_province
+              where 
+              A.name_province != B.name_province
+              OR A.created_date != B.created_date
+              OR A.updated_date != B.updated_date )  
+              UNION 
+              (select A.id_province from staging.province A where A.id_province not in (select B.id_province from data_warehouse.province B));
 END//
 DELIMITER ;
 
--- lấy số dòng của bảng prize
+-- 8
+    DROP Procedure if Exists `p_update_province_dw`;
 DELIMITER //
-DROP FUNCTION IF EXISTS get_number_row_prize //
-CREATE FUNCTION get_number_row_prize()
-RETURNS INT
-BEGIN
-	DECLARE output INT;
-    SET output = (SELECT COUNT(*) FROM prize);
-	RETURN output;
+CREATE PROCEDURE p_update_province_dw(id_province_temp varchar(10))
+BEGIN 
+	UPDATE data_warehouse.province
+	SET name_province = (SELECT name_province FROM staging.province WHERE id_province = id_province_temp),
+    created_date = (SELECT created_date FROM staging.province WHERE id_province = id_province_temp),
+    updated_date = (SELECT updated_date FROM staging.province WHERE id_province = id_province_temp)
+	WHERE id_province = id_province_temp;
+END //
+DELIMITER ;
+
+-- 9
+
+DROP Procedure if Exists `p_insert_province_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_province_dw(id_province_temp varchar(20))
+BEGIN 
+	INSERT INTO data_warehouse.province SELECT * FROM staging.province WHERE staging.province.id_province = id_province_temp;
+END //
+DELIMITER ;
+
+-- 10
+DROP Procedure if Exists `get_diff_lotto`;
+DELIMITER //
+CREATE PROCEDURE get_diff_lotto()
+BEGIN 
+(select A.natural_key
+ from staging.lotto A 
+ left join data_warehouse.lotto B
+              on A.natural_key = B.natural_key
+              where 
+              A.id_province  != B.id_province 
+              OR A.id_prize != B.id_prize
+              OR A.number != B.number 
+ 			OR A.status != B.status 
+ 			OR A.created_date != B.created_date 
+ 			OR A.updated_date != B.updated_date 
+			)  
+              UNION 
+              (select A.natural_key from staging.lotto A where A.natural_key not in (select B.natural_key from data_warehouse.lotto B));
 END//
 DELIMITER ;
 
--- lấy số dòng của bảng date_dim
+-- 11
+    DROP Procedure if Exists `p_update_lotto_dw`;
 DELIMITER //
-DROP FUNCTION IF EXISTS get_number_row_date_dim //
-CREATE FUNCTION get_number_row_date_dim()
-RETURNS INT
-BEGIN
-	DECLARE output INT;
-    SET output = (SELECT COUNT(*) FROM date_dim);
-	RETURN output;
-END//
+CREATE PROCEDURE p_update_lotto_dw(natural_key_temp varchar(255))
+BEGIN 
+	UPDATE data_warehouse.lotto
+	SET id_province  = (SELECT id_province FROM staging.lotto WHERE natural_key = natural_key_temp),
+    id_prize = (SELECT id_prize FROM staging.lotto WHERE natural_key = natural_key_temp),
+    number = (SELECT number FROM staging.lotto WHERE natural_key = natural_key_temp),
+    status = (SELECT status FROM staging.lotto WHERE natural_key = natural_key_temp),
+    created_date = (SELECT created_date FROM staging.lotto WHERE natural_key = natural_key_temp),
+    updated_date = (SELECT updated_date FROM staging.lotto WHERE natural_key = natural_key_temp)
+	WHERE natural_key = natural_key_temp;
+END //
 DELIMITER ;
 
+-- 12
+
+DROP Procedure if Exists `p_insert_lotto_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_lotto_dw(natural_key_temp varchar(255))
+BEGIN 
+	INSERT INTO data_warehouse.lotto SELECT * FROM staging.lotto WHERE staging.lotto.natural_key = natural_key_temp;
+END //
+DELIMITER ;
 
 * data warehouse
 
