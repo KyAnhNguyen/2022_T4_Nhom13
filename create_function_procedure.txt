@@ -1,8 +1,8 @@
 * staging
 
 -- procedure xóa dữ liệu của bảng date_dim
-DELIMITER //
 DROP PROCEDURE IF EXISTS delete_all_date_dim
+DELIMITER //
 CREATE PROCEDURE delete_all_date_dim()
 BEGIN
 	DELETE FROM date_dim;
@@ -10,8 +10,8 @@ END//
 DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng province
-DELIMITER //
 DROP PROCEDURE IF EXISTS delete_all_province
+DELIMITER //
 CREATE PROCEDURE delete_all_province()
 BEGIN
 	DELETE FROM province;
@@ -19,8 +19,8 @@ END//
 DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng prize
-DELIMITER //
 DROP PROCEDURE IF EXISTS delete_all_prize
+DELIMITER //
 CREATE PROCEDURE delete_all_prize()
 BEGIN
 	DELETE FROM prize;
@@ -28,8 +28,8 @@ END//
 DELIMITER ;
 
 -- procedure xóa dữ liệu của bảng lotto
-DELIMITER //
 DROP PROCEDURE IF EXISTS delete_all_lotto
+DELIMITER //
 CREATE PROCEDURE delete_all_lotto()
 BEGIN
 	DELETE FROM lotto;
@@ -38,8 +38,8 @@ DELIMITER ;
 
 
 -- procedure xóa dữ liệu tất cả các bảng
+DROP PROCEDURE IF EXISTS delete_all_date_from_table
 DELIMITER //
-DROP PROCEDURE IF EXISTS delete_all_date_from_table //
 CREATE PROCEDURE delete_all_date_from_table()
 BEGIN
 call 
