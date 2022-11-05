@@ -39,6 +39,7 @@ public class MyMain {
 
 	public boolean loadAll() throws ClassNotFoundException, SQLException {
 		if(this.checkLoad()) {
+			this.deleteAllDataStaging();
 			this.setStatusLog("FI");
 			this.conn.close();
 			return true;
@@ -53,6 +54,12 @@ public class MyMain {
 					&& this.lottoDao.loadIntoDW();
 		}
 		return false;
+	}
+	
+	public boolean deleteAllDataStaging() throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELELE_ALL_DATA);
+		return ps.executeUpdate() == 1;
 	}
 
 	public boolean setStatusLog(String statusTarget) throws ClassNotFoundException, SQLException {
