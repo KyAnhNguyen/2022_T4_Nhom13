@@ -15,56 +15,51 @@ public class MyMain {
 
 	DatabaseConnection dcon;
 	Connection conn;
+	DateDimDao dateDimDao;
+	PrizeDao prizeDao;
+	ProvinceDao provinceDao;
+	LottoDao lottoDao;
 
-	public MyMain() throws SQLException {
+	public MyMain() throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated constructor stub
 		dcon = new DatabaseConnection();
-
+//		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
+		dateDimDao = new DateDimDao(dcon);
+		prizeDao = new PrizeDao(dcon);
+		provinceDao = new ProvinceDao(dcon);
+		lottoDao = new LottoDao(dcon);
 	}
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		MyMain main = new MyMain();
-		main.transformStagingToDW();
-
+		System.out.println(main.loadAll());
+//		System.out.println("giải");
 	}
 
-	public void loadDataIntoTable(String url, String query) throws SQLException, ClassNotFoundException {
-		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
-		PreparedStatement ps = conn.prepareStatement(query);
-		ps.setString(1, url);
-		ps.executeUpdate();
-	}
-
-	public int loadDataToDWOneTable(String tableOut, String tableIn, String databaseName)
-			throws SQLException, ClassNotFoundException {
-		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
-		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.LOAD_DATA);
-		ps.setString(1, tableOut);
-		ps.setString(2, tableIn);
-		ps.setString(3, databaseName);
-		return ps.executeUpdate();
-
-	}
-
-	public boolean checkEqualRowInsert(int numberInserted, String query) throws ClassNotFoundException, SQLException {
-		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-		return numberInserted == rs.getInt(1);
-	}
-
-	public boolean loadDataToDWAllTable() throws ClassNotFoundException, SQLException {
-		ArrayList<Table> tables = this.getNameTables();
-		int amountTableEffect = 0;
-		for (Table table : tables) {
-			int rowEffect = this.loadDataToDWOneTable(table.getId(), table.getId(), "data_warehouse");
-			if (this.checkEqualRowInsert(rowEffect, this.getNumberRow(table.getName()))) {
-				amountTableEffect++;
-			}
+	public boolean loadAll() throws ClassNotFoundException, SQLException {
+		if(this.checkLoad()) {
+			this.deleteAllDataStaging();
+			this.setStatusLog("FI");
+			this.conn.close();
+			return true;
 		}
-		return tables.size() == amountTableEffect;
+		return false;
+	}
+
+	public boolean checkLoad() throws ClassNotFoundException, SQLException {
+		if (this.getStatusLog().equals("SU")) {
+			System.out.println("load");
+			return this.dateDimDao.loadIntoDW() && this.prizeDao.loadIntoDW() && this.provinceDao.loadIntoDW()
+					&& this.lottoDao.loadIntoDW();
+		}
+		return false;
+	}
+	
+	public boolean deleteAllDataStaging() throws ClassNotFoundException, SQLException {
+		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELELE_ALL_DATA);
+		return ps.executeUpdate() == 1;
 	}
 
 	public boolean setStatusLog(String statusTarget) throws ClassNotFoundException, SQLException {
@@ -74,66 +69,12 @@ public class MyMain {
 		return ps.executeUpdate() == 1;
 	}
 
-	public void deleteAllDataStaging() throws ClassNotFoundException, SQLException {
-		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
-		PreparedStatement ps = conn.prepareStatement(QUERIES.QueryTransformStaging.DELELE_ALL_DATA);
-		ps.executeUpdate();
-	}
-
-	public void transformStagingToDW() throws ClassNotFoundException, SQLException {
-		if (this.loadDataToDWAllTable()) {
-			this.deleteAllDataStaging();
-			this.setStatusLog("FI");
-		}
-	}
-
-	public ArrayList<Table> getNameTables() throws ClassNotFoundException, SQLException {
-		ArrayList<Table> output = new ArrayList<>();
+	public String getStatusLog() throws ClassNotFoundException, SQLException {
 		conn = dcon.connect(DatabaseAttributes.CONTROLLER_DATABASE);
-		PreparedStatement ps = conn.prepareStatement(QUERIES.TABLES.GET_ALL);
+		PreparedStatement ps = conn.prepareStatement(QUERIES.LOG.GET_STATUS_LOG);
 		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			output.add(new Table(rs.getString("id_table"), rs.getString("name_table")));
-		}
-		return output;
-	}
-
-	public String getNumberRow(String name_table) {
-		String output = "";
-		switch (name_table) {
-		case "PROVINCE":
-			output = QUERIES.PROVINCE.GET_NUMBER_ROW;
-			break;
-		case "PRIZE":
-			output = QUERIES.PRIZE.GET_NUMBER_ROW;
-			break;
-		case "LOTTO":
-			output = QUERIES.LOTTO.GET_NUMBER_ROW;
-			break;
-		case "DATE_DIM":
-			output = QUERIES.DATE_DIM.GET_NUMBER_ROW;
-			break;
-		}
-		return output;
-	}
-
-	public String deleteAllFromTable(String name_table) {
-		String output = "";
-		switch (name_table) {
-		case "PROVINCE":
-			output = QUERIES.PROVINCE.DELETE_ALL;
-			break;
-		case "PRIZE":
-			output = QUERIES.PRIZE.DELETE_ALL;
-			break;
-		case "LOTTO":
-			output = QUERIES.LOTTO.DELETE_ALL;
-			break;
-		case "DATE_DIM":
-			output = QUERIES.DATE_DIM.DELETE_ALL;
-			break;
-		}
-		return output;
+		rs.next();
+		return rs.getString(1);
 	}
 
 }

@@ -1,5 +1,6 @@
 package script2;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,31 +14,37 @@ import utils.QUERIES;
 public class MyMain {
 	DatabaseConnection dbConn;
 	Connection conn;
+	File file;
 
 	public MyMain() throws Exception, SQLException {
 		dbConn = new DatabaseConnection();
 
-		String[] arr_log = getConfig(QUERIES.QueryController.GET_CONFIG, 1).split("&");
-
+		String[] arr_log = getConfig(QUERIES.CONFIG.GET_CONFIG).split("&");
+		
 		Config.SERVER = arr_log[1];
 		Config.USERNAME = arr_log[3];
 		Config.PASSWORD = arr_log[4];
 
 		Handle_files.file_path_upload = arr_log[5] + date_now() + "\\";
-		Handle_files.file_path_download = arr_log[6] + date_now() + "\\";
+
+		file = new File(arr_log[6] + date_now());
+		if (file.mkdir()) {
+			Handle_files.file_path_download = arr_log[6] + date_now() + "\\";
+		} else {
+			System.out.println("create dest_file fail");
+		}
 	}
-	
+
 	public static String date_now() {
 		String s = java.time.LocalDate.now() + "";
 		String[] s1 = s.split("-");
-		String s2 = "";
-		return s2 + s1[2] + "-" + s1[1] + "-" + s1[0];
+		return s1[2] + "-" + s1[1] + "-" + s1[0];
 	}
 
 	/*
 	 * GET CONFIG FROM TABLE CONFIG OF DATABASE CONTROLLER
 	 */
-	public String getConfig(String query, int id) throws ClassNotFoundException, SQLException {
+	public String getConfig(String query) throws ClassNotFoundException, SQLException {
 
 		String result = "";
 
@@ -45,15 +52,13 @@ public class MyMain {
 
 		PreparedStatement ps = this.conn.prepareStatement(query);
 
-		ps.setInt(1, id);
-
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
 			result += rs.getInt("id_config") + "&";
 			result += rs.getString("server_name") + "&";
 			result += rs.getString("url") + "&";
-			result += rs.getString("username") + "&";
+			result += rs.getString("user_name") + "&";
 			result += rs.getString("password") + "&";
 			result += rs.getString("path_upload") + "&";
 			result += rs.getString("path_download");
@@ -66,12 +71,12 @@ public class MyMain {
 	 */
 	public void loadDataIntoTable(String url, String query) throws SQLException, ClassNotFoundException {
 		conn = dbConn.connect(DatabaseAttributes.STAGING_DATABASE);
-		
+
 		PreparedStatement ps = conn.prepareStatement(query);
-		
+
 		ps.setString(1, url);
-		
-		ps.executeUpdate();
+
+		int i = ps.executeUpdate();
 	}
 
 	/*
@@ -85,15 +90,13 @@ public class MyMain {
 
 		PreparedStatement ps = this.conn.prepareStatement(query);
 
-//		ps.setString(1, curren_date);
-
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
 			result += rs.getInt("id_log") + "-";
 			result += rs.getInt("id_config") + "-";
 			result += rs.getString("status") + "-";
-			result += rs.getInt("id_contactor") + "-";
+			result += rs.getInt("id_contactor");
 		}
 		return result;
 	}
@@ -101,16 +104,13 @@ public class MyMain {
 	/*
 	 * UPDATE STATUS OF LOG
 	 */
-	public boolean update_log_status(String query, String status, String curren_date)
-			throws ClassNotFoundException, SQLException {
+	public boolean update_log_status(String query, String status) throws ClassNotFoundException, SQLException {
 
 		this.conn = this.dbConn.connect(DatabaseAttributes.CONTROLLER_DATABASE);
 
 		PreparedStatement ps = this.conn.prepareStatement(query);
 
 		ps.setString(1, status);
-
-		ps.setString(2, curren_date);
 
 		ps.executeUpdate();
 
@@ -120,7 +120,8 @@ public class MyMain {
 	/*
 	 * LOAD FILE TO FTP SERVER AND CHECK UPLOAD
 	 */
-	public static boolean check_upload(String name_file_lotto, String name_file_prize, String name_file_province,String date_dim) {
+	public static boolean check_upload(String name_file_lotto, String name_file_prize, String name_file_province,
+			String date_dim) {
 //		CHECK UPLOAD FILE DATE_DIM TO FTP
 		if (Handle_files.upload_file(date_dim)) {
 			System.out.println("Load date_dim success");
@@ -174,23 +175,23 @@ public class MyMain {
 	public static boolean check_log_status(String status, String condition) {
 		return status.equals(condition.toUpperCase()) ? true : false;
 	}
-	
+
 	/*
 	 * LOAD DATA INTO STATGING
 	 */
-	private static void push_staging(MyMain mm, String date_current) throws ClassNotFoundException, SQLException {
-		mm.loadDataIntoTable(Handle_files.file_path_download + "date_dim_without_quarter.csv", QUERIES.QueryTransformCSV.DATE_DIM);
+	private static void push_staging(MyMain mm) throws ClassNotFoundException, SQLException {
+		mm.loadDataIntoTable(Handle_files.file_path_download + "date_dim_without_quarter.csv",
+				QUERIES.QueryTransformCSV.DATE_DIM);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "province.csv", QUERIES.QueryTransformCSV.PROVINCE);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "prize.csv", QUERIES.QueryTransformCSV.PRIZE);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "lotto.csv", QUERIES.QueryTransformCSV.LOTTO);
-		if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "SU", date_current)) {
+		if (mm.update_log_status(QUERIES.LOG.SET_STATUS, "SU")) {
 			System.out.println("Done: script 2");
 			System.exit(0);
 		}
 
 	}
-	
-	
+
 	/*
 	 * DOWNLOAD FILE FROM SERVER
 	 */
@@ -203,24 +204,23 @@ public class MyMain {
 
 	public static void main(String[] args) throws Exception {
 		MyMain mm = new MyMain();
-//		DATE CURRENT 
-		String date_current = java.time.LocalDate.now() + "";
+
 //		CHECK STATUS OF LOG
-		if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)), "ER")) {
+		if (check_log_status(log_status(mm.getLog(QUERIES.LOG.GET_LOG)), "ER")) {
 //			UPLOAD FILE EXTRACT AND CHECK
 			if (check_upload("lotto", "prize", "province", "date_dim_without_quarter")) {
 //				UPDATED STATUS OF LOG -> UPFI AND CHECK UPDATE
-				if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "UPFI", date_current)) {
+				if (mm.update_log_status(QUERIES.LOG.SET_STATUS, "UPFI")) {
 //					CHECK STATUS OF LOG
-					if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)),"UPFI")) {
+					if (check_log_status(log_status(mm.getLog(QUERIES.LOG.GET_LOG)), "UPFI")) {
 //						DOWNLOAD FILE FROM SERVER
 						download();
 //						UPDATED STATUS OF LOG -> SAVE
-						if (mm.update_log_status(QUERIES.QueryController.UPDATE_LOG_STATUS, "SAVE", date_current)) {
+						if (mm.update_log_status(QUERIES.LOG.SET_STATUS, "SAVE")) {
 //							CHECK STATUS OF LOG
-							if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)),"SAVE")) {
+							if (check_log_status(log_status(mm.getLog(QUERIES.LOG.GET_LOG)), "SAVE")) {
 //								LOAD DATA INTO STATGING
-								push_staging(mm, date_current);
+								push_staging(mm);
 							} else {
 								System.out.println("Script 2: not same SAVE && stop program");
 								System.exit(0);
@@ -230,9 +230,9 @@ public class MyMain {
 //							????
 						}
 					} else {
-						if (check_log_status(log_status(mm.getLog(QUERIES.QueryController.GET_LOG)),"SAVE")) {
+						if (check_log_status(log_status(mm.getLog(QUERIES.LOG.GET_LOG)), "SAVE")) {
 //							LOAD DATA INTO STATGING
-							push_staging(mm, date_current);
+							push_staging(mm);
 						} else {
 							System.out.println("Script 2: not same SAVE && stop program");
 							System.exit(0);
