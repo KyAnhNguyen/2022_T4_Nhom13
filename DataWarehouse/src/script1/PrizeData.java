@@ -2,14 +2,13 @@ package script1;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Date;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -72,30 +71,28 @@ public class PrizeData {
 	// Ghi nội dung các giải thưởng vào file prize.csv
 	public static boolean writeToCsvPrize(String path) throws ClassNotFoundException, SQLException {
 		File file = new File(path);
-		FileWriter fw;
 		try {
-			fw = new FileWriter(file, false);
-			BufferedWriter bw = new BufferedWriter(fw);
-
+			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
 			List<List<String>> table = getTable();
 
 			if (Data.convertDate(table.get(0).get(1), 0) == Data.intDateCurrent()) {
 				List<Prize> list = getAllPrize(table);
-				bw.write("\ufeff" + "id_prize,name_prize,value_prize,created_date,updated_date");
-				bw.newLine();
+				osw.write("\ufeff" + "id_prize,name_prize,value_prize,created_date,updated_date");
+				osw.write("\n");
 				for (Prize p : list) {
-					p.writeData(file, fw, bw);
+					p.writeData(file, osw);
 				}
-				bw.close();
-				fw.close();
+				osw.close();
 			} else {
-				bw.close();
-				fw.close();
+				osw.close();
 				return false;
 			}
 		} catch (IOException e) {
 			return false;
 		}
 		return true;
+	}
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		System.out.println(writeToCsvPrize("script1Data/14-11-2022/prize.csv"));
 	}
 }

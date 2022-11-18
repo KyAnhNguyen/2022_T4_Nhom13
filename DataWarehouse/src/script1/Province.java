@@ -1,9 +1,8 @@
 package script1;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class Province {
 	private String id_province;
@@ -19,10 +18,10 @@ public class Province {
 		this.updated_date = updated_date;
 	}
 
-	public void writeData(File file, FileWriter fw, BufferedWriter bw) {
+	public void writeData(File file, OutputStreamWriter osw) {
 		try {
-			bw.write("\ufeff" + toString());
-			bw.newLine();
+			osw.write("\ufeff" + toString());
+			osw.write("\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
