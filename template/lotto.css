@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI";
+}
+
+.container .export {
+    text-align: center;
+}
+
+.container .export * {
+    margin-top: 15px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.container .export a {
+    background-color: #ce0000;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.container .export button {
+    background-color: #ce0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.container .box_kqxs {
+    /*max-width: 620px;*/
+    width: 620px;
+    margin: 1px auto;
+}
+
+.box_kqxs .title {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: deepskyblue;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-right: black solid 1px;
+    border-left: black solid 1px;
+    border-top: black solid 1px;
+}
+
+.box_kqxs .title div {
+    font-size: 22px;
+}
+
+#table {
+    background-color: white;
+    font-size: 18px;
+    border-collapse: collapse;
+}
+
+
+#table table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+#table .table-child1 > table {
+    table-layout: fixed;
+}
+
+#table .table-child1 .col {
+    width: 155px;
+}
+
+.box_kqxs #table {
+    margin: 0 auto 5px auto;
+    border-right: black solid 1px;
+    border-left: black solid 1px;
+    border-bottom: black solid 1px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: table;
+    width: 100%;
+}
+
+.col > table > tbody > tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.col > table > tbody > tr:nth-child(1) {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #9b00a6;
+}
+.table-child1 .col tr:nth-child(3) > td {
+    font-size: 23px;
+    color: #ce0000;
+    height: 31px;
+}
+
+.table-child1 .col tr:nth-child(11) > td {
+    font-size: 21px;
+    color: #ce0000;
+}
+
+.col > .table-child1 tr:nth-child(3) > td {
+    height: 31px;
+}
+
+.col > .table-child1 tr:nth-child(5) > td {
+    height: 72px;
+}
+
+.col > .table-child1 tr:nth-child(7) > td {
+    height: 168px;
+}
+
+.col > .table-child1 tr:nth-child(8) > td {
+    height: 48px;
+}
+
+.col > .table-child1 tr:nth-child(11) > td {
+    height: 28px;
+    font-size: 18px
+}
+
+
+
+
+
+

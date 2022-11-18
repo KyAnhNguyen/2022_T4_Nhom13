@@ -1,9 +1,10 @@
 package script1;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -72,24 +73,19 @@ public class Data {
 	// Ghi nội dung các tỉnh vào file province.csv
 	public static boolean writeToCsvProvince(String path) throws ClassNotFoundException, SQLException {
 		File file = new File(path);
-		FileWriter fw;
 		try {
-			fw = new FileWriter(file, false);
-			BufferedWriter bw = new BufferedWriter(fw);
-
+			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
 			List<List<String>> table = getTable();
 			if (convertDate(table.get(0).get(1), 0) == intDateCurrent()) {
 				List<Province> list = getAllProvince(table);
-				bw.write("\ufeff" + "id_province,name_province,created_date,updated_date");
-				bw.newLine();
+				osw.write("\ufeff" + "id_province,name_province,created_date,updated_date");
+				osw.write("\n");
 				for (Province p : list) {
-					p.writeData(file, fw, bw);
+					p.writeData(file, osw);
 				}
-				bw.close();
-				fw.close();
+				osw.close();
 			} else {
-				bw.close();
-				fw.close();
+				osw.close();
 				return false;
 			}
 		} catch (IOException e) {
@@ -148,31 +144,30 @@ public class Data {
 	// Ghi nội dung các kết quả xổ số vào file lotto.csv
 	public static boolean writeToCsvLotto(String path) throws ClassNotFoundException, SQLException {
 		File file = new File(path);
-		FileWriter fw;
 		try {
-			fw = new FileWriter(file);
-			BufferedWriter bw = new BufferedWriter(fw);
-
+			OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
 			List<List<String>> table = getTable();
-
 			if (convertDate(table.get(0).get(1), 0) == intDateCurrent()) {
 				List<Lotto> list = getAllLotto(table);
-				bw.write("\ufeff" + "natural_key,id_province,id_prize,number,status,created_date,updated_date");
-				bw.newLine();
-				for (Lotto p : list) {
-					p.writeData(file, fw, bw);
+				osw.write("\ufeff" + "natural_key,id_province,id_prize,number,status,created_date,updated_date");
+				osw.write("\n");
+				for (Lotto l : list) {
+					l.writeData(file, osw);
 				}
-				bw.close();
-				fw.close();
+				osw.close();
+				
 			} else {
-				bw.close();
-				fw.close();
+				osw.close();
 				return false;
 			}
 		} catch (IOException e) {
 			return false;
 		}
 		return true;
+	}
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+//		System.out.println(writeToCsvProvince("script1Data/14-11-2022/province.csv"));
+		System.out.println(writeToCsvLotto("script1Data/17-11-2022/lotto.csv"));
 	}
 
 }
