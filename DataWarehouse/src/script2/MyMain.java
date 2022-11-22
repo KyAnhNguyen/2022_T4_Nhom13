@@ -20,7 +20,7 @@ public class MyMain {
 		dbConn = new DatabaseConnection();
 
 		String[] arr_log = getConfig(QUERIES.CONFIG.GET_CONFIG).split("&");
-		
+
 		Config.SERVER = arr_log[1];
 		Config.USERNAME = arr_log[3];
 		Config.PASSWORD = arr_log[4];
@@ -30,6 +30,7 @@ public class MyMain {
 		file = new File(arr_log[6] + date_now());
 		if (file.mkdir()) {
 			Handle_files.file_path_download = arr_log[6] + date_now() + "\\";
+			System.out.println(Handle_files.file_path_download);
 		} else {
 			System.out.println("create dest_file fail");
 		}
@@ -123,16 +124,16 @@ public class MyMain {
 	public static boolean check_upload(String name_file_lotto, String name_file_prize, String name_file_province,
 			String date_dim) {
 //		CHECK UPLOAD FILE DATE_DIM TO FTP
-		if (Handle_files.upload_file(date_dim)) {
+		if (Handle_files.upload_file(date_dim, date_now())) {
 			System.out.println("Load date_dim success");
 //			CHECK UPLOAD FILE PROVINCE TO FTP
-			if (Handle_files.upload_file(name_file_province)) {
+			if (Handle_files.upload_file(name_file_province, date_now())) {
 				System.out.println("Load province success");
 //				CHECK UPLOAD FILE PRIZE TO FTP
-				if (Handle_files.upload_file(name_file_prize)) {
+				if (Handle_files.upload_file(name_file_prize, date_now())) {
 					System.out.println("Load prize success");
 //					CHECK UPLOAD FILE LOTTO TO FTP
-					if (Handle_files.upload_file(name_file_lotto)) {
+					if (Handle_files.upload_file(name_file_lotto, date_now())) {
 						System.out.println("Load lotto success");
 						return true;
 					} else {
@@ -180,8 +181,7 @@ public class MyMain {
 	 * LOAD DATA INTO STATGING
 	 */
 	private static void push_staging(MyMain mm) throws ClassNotFoundException, SQLException {
-		mm.loadDataIntoTable(Handle_files.file_path_download + "date_dim_without_quarter.csv",
-				QUERIES.QueryTransformCSV.DATE_DIM);
+		mm.loadDataIntoTable(Handle_files.file_path_download + "date_dim_without_quarter.csv",QUERIES.QueryTransformCSV.DATE_DIM);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "province.csv", QUERIES.QueryTransformCSV.PROVINCE);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "prize.csv", QUERIES.QueryTransformCSV.PRIZE);
 		mm.loadDataIntoTable(Handle_files.file_path_download + "lotto.csv", QUERIES.QueryTransformCSV.LOTTO);
@@ -189,7 +189,6 @@ public class MyMain {
 			System.out.println("Done: script 2");
 			System.exit(0);
 		}
-
 	}
 
 	/*

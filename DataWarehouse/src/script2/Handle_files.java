@@ -11,12 +11,11 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
 public class Handle_files {
-	
+
 	public static String file_path_upload = "E:\\learnGo\\src\\scrapper\\";
 	public static String file_path_download = "E:\\learnGo\\src\\scrapper\\";
-
-
 	public static FTPClient ftpClient;
+	public static String dirServer;
 
 	/*
 	 * Connect FTP-Server
@@ -50,14 +49,18 @@ public class Handle_files {
 	/*
 	 * Upload file to FTP-Server
 	 */
-	public static boolean upload_file(String filename) {
+	public static boolean upload_file(String filename, String folder) {
 		boolean status = false;
 		try {
 			connection();
-
+			String firstRemoteFile = null;
+			if (dirServer == null) {
+				createDirFTP(folder);
+				firstRemoteFile = "/data_extract/" + dirServer + "/" + filename + ".csv";
+			} else {
+				firstRemoteFile = "/data_extract/" + dirServer + "/" + filename + ".csv";
+			}
 			File firstLocalFile = new File(file_path_upload + filename + ".csv");
-
-			String firstRemoteFile = "/data_extract/" + filename + ".csv";
 
 			InputStream inputStream = new FileInputStream(firstLocalFile);
 
@@ -80,7 +83,7 @@ public class Handle_files {
 		try {
 			connection();
 
-			String remoteFile1 = "/data_extract/" + filename + ".csv";
+			String remoteFile1 = "/data_extract/" + dirServer + "/" + filename + ".csv";
 
 			File downloadFile1 = new File(file_path_download + filename + ".csv");
 
@@ -97,7 +100,7 @@ public class Handle_files {
 		}
 		return status;
 	}
-	
+
 	/*
 	 * Delete file upload FTP Server
 	 */
@@ -106,7 +109,7 @@ public class Handle_files {
 		try {
 			connection();
 
-			String fileToDelete = "/data_extract/" + filename + ".csv";
+			String fileToDelete = "/data_extract/" + dirServer + "/" + filename + ".csv";
 
 			boolean deleted = ftpClient.deleteFile(fileToDelete);
 
@@ -121,7 +124,22 @@ public class Handle_files {
 		return status;
 	}
 
-	public static void main(String[] args) {
+	/*
+	 * Create Folder FTP
+	 */
+	public static void createDirFTP(String folderName) throws IOException {
+		connection();
+		boolean status = ftpClient.makeDirectory("/data_extract/" + folderName);
+		if (status) {
+			System.out.println("Successfully created directory: " + folderName);
+			dirServer = folderName;
+		} else {
+			System.out.println("Failed to create directory. See server's reply.");
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		createDirFTP("testFolder");
 //		System.out.println(upload_file("10-15-2022-KA"));
 //		System.out.println(upload_file("lotto_29_09_2022(19130154)"));
 //		System.out.println(upload_file("lotto_28_09_2022(19130154)"));
