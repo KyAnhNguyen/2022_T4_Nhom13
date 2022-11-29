@@ -1,0 +1,186 @@
+* data_warehouse
+
+1)
+DROP Procedure if Exists `get_diff_test_date_dim`;
+DELIMITER //
+CREATE PROCEDURE get_diff_test_date_dim()
+BEGIN 
+	( (select A.date_sk
+ from data_warehouse.date_dim A 
+ left join data_mart.date_dim B
+              on A.date_sk = B.date_sk 
+              where 
+              A.full_date != B.full_date
+              OR A.day_since_2005 != B.day_since_2005
+              OR A.month_since_2005 != B.month_since_2005
+              OR A.day_of_week != B.day_of_week )  
+              UNION 
+              (select A.date_sk from data_warehouse.date_dim A where A.date_sk not in (select B.date_sk from data_mart.date_dim B)));
+END //
+DELIMITER ;
+
+
+2)
+DROP Procedure if Exists `p_update_date_dim_dw`;
+DELIMITER //
+CREATE PROCEDURE p_update_date_dim_dw(date_sk_temp int(11))
+BEGIN 
+	UPDATE data_mart.date_dim
+	SET full_date = (SELECT full_date FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+    	day_since_2005 = (SELECT day_since_2005 FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        month_since_2005 = (SELECT month_since_2005 FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        day_of_week = (SELECT day_of_week FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        calendar_month = (SELECT calendar_month FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        calendar_year = (SELECT calendar_year FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        calendar_year_month = (SELECT calendar_year_month FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        day_of_month = (SELECT day_of_month FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        day_of_year = (SELECT day_of_year FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        week_of_year_sunday = (SELECT week_of_year_sunday FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        year_week_sunday = (SELECT year_week_sunday FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        week_sunday_start = (SELECT week_sunday_start FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        week_of_year_monday = (SELECT week_of_year_monday FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        year_week_monday = (SELECT year_week_monday FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        week_monday_start = (SELECT week_monday_start FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        holiday = (SELECT holiday FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp),
+        date_type = (SELECT date_type FROM data_warehouse.date_dim WHERE date_sk = date_sk_temp)
+	WHERE date_sk = date_sk_temp;
+END //
+DELIMITER ;
+
+3)
+DROP Procedure if Exists `p_insert_date_dim_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_date_dim_dw(date_sk_temp int(11))
+BEGIN 
+	INSERT INTO data_mart.date_dim SELECT * FROM data_warehouse.date_dim WHERE data_warehouse.date_dim.date_sk = date_sk_temp;
+END //
+DELIMITER ;
+
+4)
+DROP Procedure if Exists `get_diff_prize`;
+DELIMITER //
+CREATE PROCEDURE get_diff_prize()
+BEGIN 
+(select A.id_prize
+ from data_warehouse.prize A 
+ left join data_mart.prize B
+              on A.id_prize = B.id_prize
+              where 
+              A.name_prize != B.name_prize
+              OR A.value_prize != B.value_prize
+              OR A.created_date != B.created_date
+              OR A.updated_date != B.updated_date )  
+              UNION 
+              (select A.id_prize from data_warehouse.prize A where A.id_prize not in (select B.id_prize from data_mart.prize B));
+END//
+DELIMITER ;
+
+5)
+DROP Procedure if Exists `p_update_prize_dw`;
+DELIMITER //
+CREATE PROCEDURE p_update_prize_dw(id_prize_temp varchar(10))
+BEGIN 
+	UPDATE data_mart.prize
+	SET name_prize = (SELECT name_prize FROM data_warehouse.prize WHERE id_prize = id_prize_temp),
+    value_prize = (SELECT value_prize FROM data_warehouse.prize WHERE id_prize = id_prize_temp),
+    created_date = (SELECT created_date FROM data_warehouse.prize WHERE id_prize = id_prize_temp),
+    updated_date = (SELECT updated_date FROM data_warehouse.prize WHERE id_prize = id_prize_temp)
+	WHERE id_prize = id_prize_temp;
+END //
+DELIMITER ;
+
+6)
+DROP Procedure if Exists `p_insert_prize_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_prize_dw(id_prize_temp varchar(10))
+BEGIN 
+	INSERT INTO data_mart.prize SELECT * FROM data_warehouse.prize WHERE data_warehouse.prize.id_prize = id_prize_temp;
+END //
+DELIMITER ;
+
+7)
+DROP Procedure if Exists `get_diff_province`;
+DELIMITER //
+CREATE PROCEDURE get_diff_province()
+BEGIN 
+(select A.id_province
+ from data_warehouse.province A 
+ left join data_mart.province B
+              on A.id_province = B.id_province
+              where 
+              A.name_province != B.name_province
+              OR A.created_date != B.created_date
+              OR A.updated_date != B.updated_date )  
+              UNION 
+              (select A.id_province from data_warehouse.province A where A.id_province not in (select B.id_province from data_mart.province B));
+END//
+DELIMITER ;
+
+8)
+    DROP Procedure if Exists `p_update_province_dw`;
+DELIMITER //
+CREATE PROCEDURE p_update_province_dw(id_province_temp varchar(10))
+BEGIN 
+	UPDATE data_mart.province
+	SET name_province = (SELECT name_province FROM data_warehouse.province WHERE id_province = id_province_temp),
+    created_date = (SELECT created_date FROM data_warehouse.province WHERE id_province = id_province_temp),
+    updated_date = (SELECT updated_date FROM data_warehouse.province WHERE id_province = id_province_temp)
+	WHERE id_province = id_province_temp;
+END //
+DELIMITER ;
+
+9)
+DROP Procedure if Exists `p_insert_province_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_province_dw(id_province_temp varchar(20))
+BEGIN 
+	INSERT INTO data_mart.province SELECT * FROM data_warehouse.province WHERE data_warehouse.province.id_province = id_province_temp;
+END //
+DELIMITER ;
+
+10)
+DROP Procedure if Exists `get_diff_lotto`;
+DELIMITER //
+CREATE PROCEDURE get_diff_lotto()
+BEGIN 
+(select A.natural_key
+ from data_warehouse.lotto A 
+ left join data_mart.lotto B
+              on A.natural_key = B.natural_key
+              where 
+              A.id_province  != B.id_province 
+              OR A.id_prize != B.id_prize
+              OR A.number != B.number 
+ 			OR A.status != B.status 
+ 			OR A.created_date != B.created_date 
+ 			OR A.updated_date != B.updated_date 
+			)  
+              UNION 
+              (select A.natural_key from data_warehouse.lotto A where A.natural_key not in (select B.natural_key from data_mart.lotto B));
+END//
+DELIMITER ;
+
+11)
+    DROP Procedure if Exists `p_update_lotto_dw`;
+DELIMITER //
+CREATE PROCEDURE p_update_lotto_dw(natural_key_temp varchar(255))
+BEGIN 
+	UPDATE data_mart.lotto
+	SET id_province  = (SELECT id_province FROM data_warehouse.lotto WHERE natural_key = natural_key_temp),
+    id_prize = (SELECT id_prize FROM data_warehouse.lotto WHERE natural_key = natural_key_temp),
+    number = (SELECT number FROM data_warehouse.lotto WHERE natural_key = natural_key_temp),
+    status = (SELECT status FROM data_warehouse.lotto WHERE natural_key = natural_key_temp),
+    created_date = (SELECT created_date FROM data_warehouse.lotto WHERE natural_key = natural_key_temp),
+    updated_date = (SELECT updated_date FROM data_warehouse.lotto WHERE natural_key = natural_key_temp)
+	WHERE natural_key = natural_key_temp;
+END //
+DELIMITER ;
+
+12)
+DROP Procedure if Exists `p_insert_lotto_dw`;
+DELIMITER //
+CREATE PROCEDURE p_insert_lotto_dw(natural_key_temp varchar(255))
+BEGIN 
+	INSERT INTO data_mart.lotto SELECT * FROM data_warehouse.lotto WHERE data_warehouse.lotto.natural_key = natural_key_temp;
+END //
+DELIMITER ;
