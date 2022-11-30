@@ -1,0 +1,48 @@
+* controller
+1)
+-- procedure đặt lại status cho 1 dòng vào ngày hiện tại của bảng log 
+DELIMITER //
+DROP PROCEDURE IF EXISTS set_status_log //
+CREATE PROCEDURE set_status_log(status_target varchar(100))
+BEGIN
+	UPDATE log SET status = status_target WHERE created_date = DATE(NOW());
+END;//
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE get_log_today()
+BEGIN
+   SELECT * FROM log WHERE created_date = DATE(NOW());
+END; $$
+
+
+2)
+DELIMITER $$
+CREATE PROCEDURE get_config()
+BEGIN
+   SELECT * FROM config;
+END; $$
+
+3)
+DELIMITER $$
+CREATE PROCEDURE add_log(id_config int(11), status varchar(10), id_contactor int(11),
+created_date Date, updated_date Date)
+BEGIN
+   INSERT INTO log(id_config, status, id_contactor, created_date, updated_date) VALUES
+(id_config, status, id_contactor, created_date, updated_date);
+END; $$
+
+4)
+DROP PROCEDURE IF EXISTS `procedureName`$$
+DELIMITER $$
+CREATE PROCEDURE get_status_log()
+BEGIN
+   SELECT status FROM log WHERE created_date = DATE(NOW());
+END; $$
+
+5)
+DELIMITER $$
+CREATE PROCEDURE get_id_contactor(user_name varchar(100))
+BEGIN
+   SELECT id_contactor FROM contactor WHERE contactor.user_name = user_name;
+END; $$
