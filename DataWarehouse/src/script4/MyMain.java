@@ -39,6 +39,7 @@ public class MyMain {
 
 	public boolean loadAll() throws ClassNotFoundException, SQLException {
 		if(this.checkLoad()) {
+			this.setStatusLog("END");
 			this.conn.close();
 			return true;
 		}

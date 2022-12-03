@@ -62,7 +62,7 @@ public class MyMain {
 			result += rs.getString("user_name") + "&";
 			result += rs.getString("password") + "&";
 			result += rs.getString("path_upload") + "&";
-			result += rs.getString("path_download");
+			result += rs.getString("path_download") + "&";
 		}
 		return result;
 	}
