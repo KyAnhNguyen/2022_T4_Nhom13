@@ -14,7 +14,9 @@ public class DatabaseConnection {
 		
 		
 	}
-	
+	/*
+	 * CONNECTION DATABASE
+	 */
 	public Connection connect(String database_name) throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		conn = DriverManager.getConnection(  

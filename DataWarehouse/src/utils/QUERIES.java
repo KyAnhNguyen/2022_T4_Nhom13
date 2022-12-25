@@ -28,7 +28,9 @@ public class QUERIES {
 		public static final String DELETE_DATA_DATE_DIM_DW = "call delete_all_date_dim()";
 		public static final String DELETE_DATA_PRIZE_DW = "call delete_all_prize()";
 	}
-
+	/*
+	 * QUERY PROVINCE
+	 */
 	public static class PROVINCE {
 		public static final String GET_DIFF = "call get_diff_province;";
 		public static final String GET_BY_ID_DW = "select * from data_warehouse.province where id_province = ?";
@@ -36,7 +38,9 @@ public class QUERIES {
 		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_province_dw(?)";
 		public static final String GET_BY_ID_DM = "select * from data_mart.province where id_province = ?";
 	}
-
+	/*
+	 * QUERY PRIZE
+	 */
 	public static class PRIZE {
 		public static final String GET_DIFF = "call get_diff_prize;";
 		public static final String GET_BY_ID_DW = "select * from data_warehouse.prize where id_prize = ?";
@@ -44,7 +48,9 @@ public class QUERIES {
 		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_prize_dw(?)";
 		public static final String GET_BY_ID_DM = "select * from data_mart.prize where id_prize = ?";
 	}
-
+	/*
+	 * QUERY LOTTO
+	 */
 	public static class LOTTO {
 		public static final String GET_DIFF = "call get_diff_lotto;";
 		public static final String GET_BY_ID_DW = "select * from data_warehouse.lotto where natural_key = ?";
@@ -52,7 +58,9 @@ public class QUERIES {
 		public static final String INSERT_ALL_FROM_STAGING = "call p_insert_lotto_dw(?)";
 		public static final String GET_BY_ID_DM = "select * from data_mart.lotto where natural_key = ?";
 	}
-
+	/*
+	 * QUERY DATE DIM
+	 */
 	public static class DATE_DIM {
 		public static final String GET_DIFF = "call get_diff_test_date_dim;";
 		public static final String GET_BY_ID_DW = "select * from data_warehouse.date_dim where date_sk = ?";
@@ -64,14 +72,18 @@ public class QUERIES {
 	public static class TABLES {
 		public static final String GET_ALL = "SELECT id_table, name_table FROM tables ORDER BY created_date ASC;";
 	}
-
+	/*
+	 * QUERY LOG
+	 */
 	public static class LOG {
 		public static final String SET_STATUS = "call set_status_log(?);";
 		public static final String GET_LOG = "call get_log_today();";
 		public static final String ADD_LOG = "call add_log(?, ?, ?, ?, ?);";
 		public static final String GET_STATUS_LOG = "call get_status_log();";
 	}
-
+	/*
+	 * QUERY CONFIG
+	 */
 	public static class CONFIG {
 		public static final String GET_DATABASE_STAGING = "select url from config where server_name = 'mysql' ";
 		public static final String GET_CONFIG = "call get_config;";
@@ -88,7 +100,9 @@ public class QUERIES {
 //		public static final String GET_CONFIG = "SELECT * FROM config WHERE id_config = ?";
 
 	}
-
+	/*
+	 * QUERY CONTACTOR
+	 */
 	public static class CONTACTOR {
 		public static final String GET_ID_CONTACTOR = "call get_id_contactor(?);";
 	}

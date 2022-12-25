@@ -18,7 +18,9 @@ public class DateDimDao {
 		this.dcon = dcon;
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 	}
-
+	/*
+	 * LOAD DATA INTO DATA WEREHOUSE
+	 */
 	public boolean loadIntoDW() throws ClassNotFoundException, SQLException {
 		int count = 0;
 		ArrayList<Integer> idList = this.getDiff();
@@ -30,9 +32,11 @@ public class DateDimDao {
 		return count == idList.size();
 	}
 
+	/*
+	 * GET DATE DIM
+	 */
 	public ArrayList<Integer> getDiff() throws ClassNotFoundException, SQLException {
 		ArrayList<Integer> output = new ArrayList<>();
-//		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.DATE_DIM.GET_DIFF);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -40,7 +44,9 @@ public class DateDimDao {
 		}
 		return output;
 	}
-
+	/*
+	 * CHECK ID  isEXITS 
+	 */
 	public boolean checkExistId(int idTarget) throws ClassNotFoundException, SQLException {
 //		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.DATE_DIM.GET_BY_ID_DW);
@@ -48,7 +54,7 @@ public class DateDimDao {
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
 	}
-
+	
 	public boolean save(int idTarget) throws ClassNotFoundException, SQLException {
 		boolean output = false;
 		if (checkExistId(idTarget)) {
@@ -58,7 +64,10 @@ public class DateDimDao {
 		}
 		return output;
 	}
-
+	
+	/*
+	 * UPDATE DATE DIM
+	 */
 	public boolean update(int idTarget) throws ClassNotFoundException, SQLException {
 //		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.DATE_DIM.UPDATE);
@@ -66,7 +75,10 @@ public class DateDimDao {
 		int result = ps.executeUpdate();
 		return result == 1;
 	}
-
+	
+	/*
+	 * INSER ALL DATE DIM FOR STAGING
+	 */
 	public boolean insert(int idTarget) throws ClassNotFoundException, SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(QUERIES.DATE_DIM.INSERT_ALL_FROM_STAGING);

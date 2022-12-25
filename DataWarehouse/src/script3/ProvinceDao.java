@@ -39,7 +39,9 @@ public class ProvinceDao {
 		}
 		return output;
 	}
-	
+	/*
+	 * CHECK ISEXIT
+	 */
 	public boolean checkExistId(String idTarget) throws ClassNotFoundException, SQLException {
 //		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.PROVINCE.GET_BY_ID_DW);
@@ -47,7 +49,9 @@ public class ProvinceDao {
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
 	}
-	
+	/*
+	 * CHECK ISEXIT : UPDATE OR INSERT
+	 */
 	public boolean save(String idTarget) throws ClassNotFoundException, SQLException {
 		boolean output = false;
 		if (checkExistId(idTarget)) {
@@ -58,7 +62,9 @@ public class ProvinceDao {
 		return output;
 	}
 	
-	
+	/*
+	 * UPDATE PROVINCE
+	 */
 	public boolean update(String idTarget) throws ClassNotFoundException, SQLException {
 //		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.PROVINCE.UPDATE);
@@ -66,7 +72,9 @@ public class ProvinceDao {
 		int result = ps.executeUpdate();
 		return result == 1;
 	}
-	
+	/*
+	 * INSERT ALL DATA FOR TABLE PROVINCE
+	 */
 	public boolean insert(String idTarget) throws ClassNotFoundException, SQLException {
 //		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 		PreparedStatement ps = conn.prepareStatement(QUERIES.PROVINCE.INSERT_ALL_FROM_STAGING);
