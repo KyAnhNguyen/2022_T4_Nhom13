@@ -19,9 +19,11 @@ import java.util.List;
 public class LottoController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
         PrizeService prizeService = new PrizeService();
         List<Prize> prizeList = prizeService.getAllPrizeByCD();
+
 
         ProvinceService provinceService = new ProvinceService();
         List<Province> provinceList = provinceService.getProvinceByCD();

@@ -15,4 +15,9 @@ public interface LottoDAO {
     @SqlQuery("select * from Lotto WHERE created_date=(select max(created_date) from Lotto) and id_province=:id_province and id_prize=:id_prize")
     List<Lotto> findByDPP(@Bind("id_province") String id_province, @Bind("id_prize") String id_prize);
 
+    @SqlQuery("select * from Lotto WHERE created_date=(select max(created_date) from Lotto)")
+    List<Lotto> getAllToday();
+
+
+
 }
