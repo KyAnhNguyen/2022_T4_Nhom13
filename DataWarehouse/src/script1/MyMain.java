@@ -62,6 +62,7 @@ public class MyMain {
 			System.out.println(PrizeData.writeToCsvPrize(path + "/prize.csv"));
 			System.out.println(Data.writeToCsvProvince(path + "/province.csv"));
 			System.out.println(Data.writeToCsvLotto(path + "/lotto.csv"));
+			System.out.println(loadDateDim("script1Data" + "/date_dim_without_quarter.csv", path + "/date_dim_without_quarter.csv"));
 			if (checkData()) {
 				dao.setStatusLog("ER");
 			} else {
