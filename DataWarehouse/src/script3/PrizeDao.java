@@ -14,7 +14,6 @@ public class PrizeDao {
 	DatabaseConnection dcon;
 	Connection conn;
 	public PrizeDao(DatabaseConnection dcon) throws ClassNotFoundException, SQLException {
-		// TODO Auto-generated constructor stub
 		this.dcon = dcon;
 		conn = dcon.connect(DatabaseAttributes.STAGING_DATABASE);
 	}
