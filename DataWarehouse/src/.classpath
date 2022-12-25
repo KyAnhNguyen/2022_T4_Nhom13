@@ -6,8 +6,8 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="E:/Film-Schedule---Data-Warehouse/commons-net-3.8.0.jar"/>
-	<classpathentry kind="lib" path="E:/Film-Schedule---Data-Warehouse/jsoup-1.15.3.jar"/>
-	<classpathentry kind="lib" path="E:/Film-Schedule---Data-Warehouse/mysql-connector-java-8.0.27.jar"/>
+	<classpathentry kind="lib" path="F:/general folder/monHocNam4Ki1/dataWarehouse/gitTeam/LOTTO-Data-Warehouse/DataWarehouse/src/libs/commons-net-3.8.0.jar"/>
+	<classpathentry kind="lib" path="F:/general folder/monHocNam4Ki1/dataWarehouse/gitTeam/LOTTO-Data-Warehouse/DataWarehouse/src/libs/jsoup-1.15.3.jar"/>
+	<classpathentry kind="lib" path="F:/general folder/monHocNam4Ki1/dataWarehouse/gitTeam/LOTTO-Data-Warehouse/DataWarehouse/src/libs/mysql-connector-java-8.0.27.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
